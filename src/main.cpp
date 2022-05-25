@@ -180,7 +180,7 @@ double inputcurve(int x){
   float e = 2.718;
   float t = 2.1;
   //return (e-(t/10)+e(abs9(x)-127)
-  return (powf(e, -(t/10))+powf(e, ((abs(x)-100)/10))*(1-powf(e, -(t/10))))*x;
+  return (powf(e, -(t/10))+powf(e, ((abs(x)-127)/10))*(1-powf(e, -(t/10))))*x;
 }
 
 void opcontrol() {
