@@ -166,8 +166,8 @@ void flywheel_control() {
 }
 pros::Task flywheelControl(flywheel_control);
 
-const int initial_deadzone = 5;
-const int final_deadzone = 10;
+const int initial_deadzone = 3;
+const int final_deadzone = 3;
 double m = (final_deadzone - initial_deadzone) / (127.0);
 int deadzone(int input) {
   double y = m * abs(input) + initial_deadzone;
@@ -177,9 +177,8 @@ int deadzone(int input) {
 }
 
 double inputcurve(int x){
-  float e = 2.718;
-  float t = 2.1;
-  //return (e-(t/10)+e(abs9(x)-127)
+  double e = 2.718;
+  double t = 2.1;
   return (powf(e, -(t/10))+powf(e, ((abs(x)-127)/10))*(1-powf(e, -(t/10))))*x;
 }
 
