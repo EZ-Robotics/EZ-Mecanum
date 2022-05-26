@@ -14,7 +14,12 @@ pros::Motor r2_back(16);
 pros::Motor flywheel(4, MOTOR_GEARSET_06, false, MOTOR_ENCODER_DEGREES);
 pros::Motor intake(3);
 
-void set_drive(int fl, int bl, int fr, int br) {
+void set_drive(int forward, int strafe, int turn) {
+  int fl = forward + turn + strafe;
+  int bl = forward + turn - strafe;
+  int fr = forward - turn - strafe;
+  int br = forward - turn + strafe;
+
   l1_front = fl;
   l2_front = fl;
   l1_back = bl;
@@ -176,27 +181,21 @@ int deadzone(int input) {
   return 0;
 }
 
-double inputcurve(int x){
+double inputcurve(int x) {
   double e = 2.718;
   double t = 2.1;
-  return (powf(e, -(t/10))+powf(e, ((abs(x)-127)/10))*(1-powf(e, -(t/10))))*x;
+  return (powf(e, -(t / 10)) + powf(e, ((abs(x) - 127) / 10)) * (1 - powf(e, -(t / 10)))) * x;
 }
 
 void opcontrol() {
   drive_brake(MOTOR_BRAKE_BRAKE);
 
   while (true) {
-    int Ch3 = deadzone(master.get_analog(ANALOG_LEFT_Y));
-    int Ch4 = deadzone(master.get_analog(ANALOG_LEFT_X));
-    int Ch1 = inputcurve(deadzone(master.get_analog(ANALOG_RIGHT_X)));
+    int forward = deadzone(master.get_analog(ANALOG_LEFT_Y));
+    int strafe = deadzone(master.get_analog(ANALOG_LEFT_X));
+    int turn = inputcurve(deadzone(master.get_analog(ANALOG_RIGHT_X)));
 
-    int FrontLeft = Ch3 + Ch1 + Ch4;
-    int RearLeft = Ch3 + Ch1 - Ch4;
-    int FrontRight = Ch3 - Ch1 - Ch4;
-    int RearRight = Ch3 - Ch1 + Ch4;
-
-    set_drive(FrontLeft, RearLeft, FrontRight, RearRight);
-    
+    set_drive(forward, strafe, turn);
 
     if (master.get_digital_new_press(DIGITAL_L1)) {
       targetRPM = targetRPM != 0 ? 0 : 3230;
