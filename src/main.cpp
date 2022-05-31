@@ -1,285 +1,35 @@
 #include "main.h"
 
-pros::Controller master(pros::E_CONTROLLER_MASTER);
-
-pros::Motor l1_front(19, true);
-pros::Motor l2_front(20);
-pros::Motor r1_front(12, true);
-pros::Motor r2_front(14);
-pros::Motor l1_back(17, true);
-pros::Motor l2_back(18);
-pros::Motor r1_back(15, true);
-pros::Motor r2_back(16);
-
-pros::Motor flywheel(4, MOTOR_GEARSET_06, false, MOTOR_ENCODER_DEGREES);
-pros::Motor intake(3);
-//pros::Motor indexer(10, true);
-
-pros::ADIDigitalOut indexerPiston('A');
-
-const int delay_time = 10;
-
-
-void set_drive(int forward, int strafe, int turn) {
-  int fl = forward + turn + strafe;
-  int bl = forward + turn - strafe;
-  int fr = forward - turn - strafe;
-  int br = forward - turn + strafe;
-
-  l1_front = fl;
-  l2_front = fl;
-  l1_back = bl;
-  l2_back = bl;
-  r1_front = fr;
-  r2_front = fr;
-  r1_back = br;
-  r2_back = br;
-}
-
-void drive_brake(pros::motor_brake_mode_e_t input) {
-  l1_front.set_brake_mode(input);
-  l2_front.set_brake_mode(input);
-  r1_front.set_brake_mode(input);
-  r2_front.set_brake_mode(input);
-  l1_back.set_brake_mode(input);
-  l2_back.set_brake_mode(input);
-  r1_back.set_brake_mode(input);
-  r2_back.set_brake_mode(input);
-}
-
-void set_flywheel(int input) {
-  flywheel = input;
-}
-
-void set_intake(int input) {
-  intake = input;
-}
-
-void set_indexer(bool input) {
-  indexerPiston.set_value(input);
-}
-
-int indexer_state = 0;
-
-void indexer_control() {
-  const int active_time = 500; // keep in multiples of 10 ms
-  int timer = -1;
-
-  // while(1) {
-  //
-  //   if(indexer_state == 1) {
-  //     if(timer == -1) {
-  //       timer = active_time;
-  //     }
-  //   }
-  //
-  //   timer -= delay_time;
-  //
-  //   if(timer < 0) {
-  //     timer = -1;
-  //     indexer_state = 0;
-  //   }
-  //
-  //   set_indexer(indexer_state);
-  //
-  //   pros::delay(delay_time);
-  // }
-
-  while(1) {
-    if(indexer_state == 1) {
-      indexer_state = 2;
-      timer = active_time;
-    }
-
-
-    while(timer >= 0) {
-
-      timer -= delay_time;
-      set_indexer(true);
-      pros::delay(delay_time);
-    }
-
-    if(indexer_state == 2) indexer_state = 0;
-    set_indexer(false);
-
-    pros::delay(delay_time);
-  }
-}
-
-
-
-/**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
- */
+// This occurs as soon as the program starts.
 void initialize() {
   pros::lcd::initialize();
 }
 
-/**
- * Runs while the robot is in the disabled state of Field Management System or
- * the VEX Competition Switch, following either autonomous or opcontrol. When
- * the robot is enabled, this task will exit.
- */
+// Runs while the robot is in disabled at on a competition.
 void disabled() {}
 
-/**
- * Runs after initialize(), and before autonomous when connected to the Field
- * Management System or the VEX Competition Switch. This is intended for
- * competition-specific initialization routines, such as an autonomous selector
- * on the LCD.
- *
- * This task will exit when the robot is enabled and autonomous or opcontrol
- * starts.
- */
+// Runs after initialize(), and before autonomous when connected to a competition.
 void competition_initialize() {}
 
-/**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
- */
-void autonomous() {}
+// Runs the user autonomous code.
+void autonomous() {
+  drive_brake(MOTOR_BRAKE_HOLD);
 
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
-
-double targetRPM = 0;
-double getRPM() {
-  return flywheel.get_actual_velocity() * 5;
-}
-bool flywheel_on = false;
-void flywheel_control() {
-  const double kP = 3.0;
-
-  const double maxVoltage = 12000;
-
-  // Geared for 3000RPM (600 5:1), but this is the measured max RPM
-  const double maxRPM = 3200;
-
-  // Multiplied by a scalar to adjust for the real world
-  const double kv = 0.98 * maxVoltage / maxRPM;
-
-  // "Acceptable" velocity range to switch to hold power + p control
-  double deadband = 100;
-
-  while (1) {
-    // rpmGuard.take(2);
-
-    double rpmError = targetRPM - getRPM();
-
-    double holdPower = targetRPM * kv;
-
-    double output = 0;
-
-    // Coast down
-    if (targetRPM == 0) {
-      pros::lcd::set_text(2, "Flywheel Off!         ");
-      output = 0;
-    }
-    // Running too slow (< target - deadband), apply full power
-    else if (rpmError > deadband) {
-      pros::lcd::set_text(2, "Flywheel Too Slow!      ");
-      output = maxVoltage;
-    }
-    // Running too fast (> target + deadband), apply half of hold power
-    else if (rpmError < -deadband) {
-      pros::lcd::set_text(2, "Flywheel Too Fast!      ");
-      output = holdPower * 0.5;
-    }
-    // Running within deadband, switch to hold power + p contorl
-    else {
-      output = holdPower + kP * rpmError;
-      pros::lcd::set_text(2, "At Velocity!          ");
-    }
-
-    if (targetRPM >= 0) {
-      // flywheelMotor.moveVoltage(output);
-      // set_flywheel(output);
-      flywheel.move_voltage(output);
-      // lastCommandedVoltage = 0;
-    }
-
-    // rpmGuard.give();
-    // delay(sampleTime);
-    std::string str_rpm = std::to_string(targetRPM);
-    std::string str_cur = std::to_string((int)getRPM());
-    pros::lcd::set_text(0, "Target Vel: " + str_rpm);
-    pros::lcd::set_text(1, "Current Vel: " + str_cur);
-    pros::delay(10);
-  }
-}
-pros::Task flywheelControl(flywheel_control);
-pros::Task indexerControl(indexer_control);
-
-
-const int initial_deadzone = 3;
-const int final_deadzone = 3;
-double m = (final_deadzone - initial_deadzone) / (127.0);
-int deadzone(int input) {
-  double y = m * abs(input) + initial_deadzone;
-  if (abs(input) > y)
-    return input;
-  return 0;
+  // . . .
 }
 
-double inputcurve(int x) {
-  double e = 2.718;
-  double t = 2.1;
-  return (powf(e, -(t / 10)) + powf(e, ((abs(x) - 127) / 10)) * (1 - powf(e, -(t / 10)))) * x;
-}
-
+// Runs the operator control code.
 void opcontrol() {
+  // Drive preference
   drive_brake(MOTOR_BRAKE_BRAKE);
 
   while (true) {
-    int forward = master.get_analog(ANALOG_LEFT_Y);
-    int strafe = master.get_analog(ANALOG_LEFT_X);
-    int turn = inputcurve(master.get_analog(ANALOG_RIGHT_X));
 
-    set_drive(forward, strafe, turn);
+    flywheel_opcontrol();
+    joystick_control();
+    indexer_opcontrol();
+    intake_opcontrol();
 
-    if (master.get_digital_new_press(DIGITAL_R1)) {
-      targetRPM = targetRPM != 0 ? 0 : 3230;
-    } else if (master.get_digital_new_press(DIGITAL_R2)) {
-      targetRPM = targetRPM != 0 ? 0 : 3000;
-    } else if (master.get_digital_new_press(DIGITAL_UP)) {
-      targetRPM = targetRPM != 0 ? 0 : 2800;
-    }
-
-    if (master.get_digital(DIGITAL_L1)) {
-      set_intake(127);
-    } else if (master.get_digital(DIGITAL_L2)) {
-      set_intake(-127);
-    } else {
-      set_intake(0);
-    }
-
-
-    if(master.get_digital_new_press(DIGITAL_DOWN) && (indexer_state == 0)) {
-      indexer_state = 1;
-    }
-
-
-    pros::delay(10);
+    pros::delay(DELAY_TIME);
   }
 }
