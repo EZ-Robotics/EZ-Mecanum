@@ -24,6 +24,9 @@ int sgn(double input) {
   return 0;
 }
 
+double to_deg(double input) { return input * (180 / M_PI); }
+double to_rad(double input) { return input * (M_PI / 180); }
+
 std::string exit_to_string(exit_output input) {
   switch ((int)input) {
     case RUNNING:

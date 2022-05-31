@@ -1,3 +1,9 @@
+/*
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
 #include "main.h"
 
 // Returns inches
@@ -10,6 +16,14 @@ void reset_trackers() {
   center_tracker.reset();
   left_tracker.reset();
   right_tracker.reset();
+}
+
+void set_angle(double input) {
+  headingPID.set_target(input);
+  angle_rad = to_rad(input);
+  angle_rad = to_rad(input);
+  target.theta = input;
+  current.theta = input;
 }
 
 // For internal use only

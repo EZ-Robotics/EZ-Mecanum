@@ -31,6 +31,15 @@ enum exit_output { RUNNING = 1,
                    ERROR_NO_CONSTANTS = 6 };
 
 /**
+ * Struct for coordinates
+ */
+typedef struct pose {
+  double x;
+  double y;
+  double theta;
+} pose;
+
+/**
  * Outputs string for exit_condition enum.
  */
 std::string exit_to_string(exit_output input);
@@ -49,3 +58,6 @@ double clip_num(double input, double max, double min);
  * Returns 1 if input is positive and -1 if input is negative
  */
 int sgn(double input);
+
+double to_deg(double input);
+double to_rad(double input);

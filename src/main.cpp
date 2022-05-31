@@ -40,13 +40,14 @@ void autonomous() {
 // Runs the operator control code.
 void opcontrol() {
   // Drive brake, this is preference
-  drive_brake(MOTOR_BRAKE_BRAKE);
+  drive_brake(MOTOR_BRAKE_COAST);
 
   while (true) {
-    printf("C: %.1f  L: %.1f  R: %.1f  \n", get_center(), get_left(), get_right());
+    //printf("C: %.1f  L: %.1f  R: %.1f  \n", get_center(), get_left(), get_right());
+    printf("x: %.1f  y: %.1f  theta: %.1f \n", current.x, current.y, current.theta);
 
     flywheel_opcontrol();
-    joystick_control();
+    //joystick_control();
     indexer_opcontrol();
     intake_opcontrol();
 

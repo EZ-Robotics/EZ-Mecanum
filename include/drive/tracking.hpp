@@ -6,6 +6,14 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #pragma once 
 
-void set_intake(int input);
+#include "util/util.hpp"
 
-void intake_opcontrol();
+void set_x(double x);
+void set_y(double y);
+void set_theta(double a);
+void reset_odom();
+void set_pose(pose target);
+
+inline pose target;
+inline pose current;
+inline double angle_rad;

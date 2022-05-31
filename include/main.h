@@ -45,6 +45,7 @@
 
 #include "ports.hpp"
 
+#include "drive/tracking.hpp"
 #include "drive/drive.hpp"
 #include "drive/set_pid.hpp"
 #include "drive/pid_tasks.hpp"
