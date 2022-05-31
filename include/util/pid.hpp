@@ -29,7 +29,7 @@ class PID {
    * \param name
    *        std::string of name that prints
    */
-  PID(double p, double i = 0, double d = 0, double start_i = 0, std::string name = "");
+  PID(double p = 0, double i = 0, double d = 0, double start_i = 0, std::string name = "");
 
   /**
    * Set constants for PID.

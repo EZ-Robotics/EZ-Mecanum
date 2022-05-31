@@ -35,19 +35,26 @@
 #define PROS_USE_LITERALS
 
 #include "api.h"
-#include "drive/drive.hpp"
-#include "ports.hpp"
-#include "util/pid.hpp"
-#include "util/util.hpp"
-#include "flywheel.hpp"
-#include "indexer.hpp"
-#include "intake.hpp"
+
 
 /**
  * You should add more #includes here
  */
-//#include "okapi/api.hpp"
+#include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
+
+#include "ports.hpp"
+
+#include "drive/drive.hpp"
+#include "drive/set_pid.hpp"
+#include "drive/pid_tasks.hpp"
+
+#include "util/util.hpp"
+#include "util/pid.hpp"
+
+#include "flywheel.hpp"
+#include "indexer.hpp"
+#include "intake.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

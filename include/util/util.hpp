@@ -15,6 +15,7 @@ inline pros::Controller master(pros::E_CONTROLLER_MASTER);
  * Enum for drive types.
  */
 enum e_mode { DISABLE = 0,
+              DISABLED = 0,
               SWING = 1,
               TURN = 2,
               DRIVE = 3 };
@@ -35,6 +36,9 @@ enum exit_output { RUNNING = 1,
 std::string exit_to_string(exit_output input);
 
 const int DELAY_TIME = 10;
+
+inline int mode = DISABLE;
+inline bool AUTO_RAN = false;
 
 /**
  * Returns input restricted to min-max threshold

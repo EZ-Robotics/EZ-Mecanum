@@ -2,7 +2,14 @@
 
 // This occurs as soon as the program starts.
 void initialize() {
+  pros::delay(300);
+
+  imu.reset();
+  pros::delay(2000);
+  master.rumble(".");
+
   pros::lcd::initialize();
+  pros::lcd::set_background_color(255, 110, 199);
 }
 
 // Runs while the robot is in disabled at on a competition.
@@ -13,17 +20,30 @@ void competition_initialize() {}
 
 // Runs the user autonomous code.
 void autonomous() {
+  reset_trackers();
+  reset_pid_targets();
+  imu.set_heading(0);
   drive_brake(MOTOR_BRAKE_HOLD);
+
+  set_drive_pid(12, 110);
+  pros::delay(2000);
+  set_turn_pid(90, 110);
+  pros::delay(1000);
+  set_turn_pid(0, 110);
+  pros::delay(1000);
+  set_drive_pid(-12, 110);
+  pros::delay(2000);
 
   // . . .
 }
 
 // Runs the operator control code.
 void opcontrol() {
-  // Drive preference
+  // Drive brake, this is preference
   drive_brake(MOTOR_BRAKE_BRAKE);
 
   while (true) {
+    printf("C: %.1f  L: %.1f  R: %.1f  \n", get_center(), get_left(), get_right());
 
     flywheel_opcontrol();
     joystick_control();
