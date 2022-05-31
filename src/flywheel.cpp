@@ -73,10 +73,8 @@ void flywheel_control() {
 pros::Task flywheelControl(flywheel_control);
 
 void flywheel_opcontrol() {
-  if (master.get_digital_new_press(DIGITAL_R1))
+  if (master.get_digital_new_press(B_FLYWHEEL_MAX))
     targetRPM = targetRPM != 0 ? 0 : 3230;
-  else if (master.get_digital_new_press(DIGITAL_R2))
+  else if (master.get_digital_new_press(B_FLYWHEEL_SLOW))
     targetRPM = targetRPM != 0 ? 0 : 3000;
-  else if (master.get_digital_new_press(DIGITAL_UP))
-    targetRPM = targetRPM != 0 ? 0 : 2800;
 }

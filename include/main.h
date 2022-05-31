@@ -43,7 +43,7 @@
 #include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
 
-#include "ports.hpp"
+#include "setup.hpp"
 
 #include "drive/tracking.hpp"
 #include "drive/drive.hpp"

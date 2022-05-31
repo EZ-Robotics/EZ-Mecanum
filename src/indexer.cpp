@@ -33,7 +33,7 @@ void indexer_control() {
 pros::Task indexerControl(indexer_control);
 
 void indexer_opcontrol() {
-  if (master.get_digital_new_press(DIGITAL_DOWN) && (indexer_state == 0)) {
+  if (master.get_digital_new_press(B_INDEXER) && (indexer_state == 0)) {
     indexer_state = 1;
   }
 }

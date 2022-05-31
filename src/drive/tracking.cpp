@@ -33,7 +33,6 @@ void tracking_task() {
   double radius_r = 0, radius_c = 0, h = 0, h2 = 0;  // rad for big circle
   double beta = 0, alpha = 0, theta = 0;
   double Xx = 0, Yy = 0, Xy = 0, Yx = 0;
-  bool is_three = false;
   while (true) {
     l_current = get_left();
     r_current = get_right();
@@ -56,10 +55,8 @@ void tracking_task() {
       radius_r = r / theta;
       beta = theta / 2.0;
       h = ((radius_r + RIGHT_OFFSET) * sin(beta)) * 2.0;
-      if (is_three) {
-        radius_c = c / theta;
-        h2 = (radius_c + CENTER_OFFSET) * 2 * sin(beta);
-      }
+      radius_c = c / theta;
+      h2 = (radius_c + CENTER_OFFSET) * 2.0 * sin(beta);
     } else {
       h = l;
       h2 = 0;
