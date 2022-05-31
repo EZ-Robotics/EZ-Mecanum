@@ -55,9 +55,21 @@ inline bool AUTO_RAN = false;
 double clip_num(double input, double max, double min);
 
 /**
+ * Constrains the angle to 180 to -180
+ */
+double wrap_angle(double theta);
+
+/**
  * Returns 1 if input is positive and -1 if input is negative
  */
 int sgn(double input);
 
+/**
+ * Convert radians to degrees
+ */
 double to_deg(double input);
+
+/**
+ * Convert degrees to radians
+ */
 double to_rad(double input);

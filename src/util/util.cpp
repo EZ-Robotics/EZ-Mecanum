@@ -27,6 +27,12 @@ int sgn(double input) {
 double to_deg(double input) { return input * (180 / M_PI); }
 double to_rad(double input) { return input * (M_PI / 180); }
 
+double wrap_angle(double theta) {
+  while (theta > 180) theta -= 360;
+  while (theta < -180) theta += 360;
+  return theta;
+}
+
 std::string exit_to_string(exit_output input) {
   switch ((int)input) {
     case RUNNING:

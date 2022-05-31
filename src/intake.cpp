@@ -9,11 +9,11 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 void set_intake(int input) { intake = input; }
 
 void intake_opcontrol() {
-        if (master.get_digital(B_INTAKE_IN)) {
-      set_intake(127);
-    } else if (master.get_digital(B_INTAKE_OUT)) {
-      set_intake(-127);
-    } else {
-      set_intake(0);
-    }
+  if (master.get_digital(B_INTAKE_IN)) {
+    set_intake(127);
+  } else if (master.get_digital(B_INTAKE_OUT)) {
+    set_intake(-127);
+  } else {
+    set_intake(0);
+  }
 }
