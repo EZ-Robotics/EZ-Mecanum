@@ -13,6 +13,12 @@ pros::Motor r2_back(16);
 
 pros::Motor flywheel(4, MOTOR_GEARSET_06, false, MOTOR_ENCODER_DEGREES);
 pros::Motor intake(3);
+//pros::Motor indexer(10, true);
+
+pros::ADIDigitalOut indexerPiston('A');
+
+const int delay_time = 10;
+
 
 void set_drive(int forward, int strafe, int turn) {
   int fl = forward + turn + strafe;
@@ -48,6 +54,59 @@ void set_flywheel(int input) {
 void set_intake(int input) {
   intake = input;
 }
+
+void set_indexer(bool input) {
+  indexerPiston.set_value(input);
+}
+
+int indexer_state = 0;
+
+void indexer_control() {
+  const int active_time = 500; // keep in multiples of 10 ms
+  int timer = -1;
+
+  // while(1) {
+  //
+  //   if(indexer_state == 1) {
+  //     if(timer == -1) {
+  //       timer = active_time;
+  //     }
+  //   }
+  //
+  //   timer -= delay_time;
+  //
+  //   if(timer < 0) {
+  //     timer = -1;
+  //     indexer_state = 0;
+  //   }
+  //
+  //   set_indexer(indexer_state);
+  //
+  //   pros::delay(delay_time);
+  // }
+
+  while(1) {
+    if(indexer_state == 1) {
+      indexer_state = 2;
+      timer = active_time;
+    }
+
+
+    while(timer >= 0) {
+
+      timer -= delay_time;
+      set_indexer(true);
+      pros::delay(delay_time);
+    }
+
+    if(indexer_state == 2) indexer_state = 0;
+    set_indexer(false);
+
+    pros::delay(delay_time);
+  }
+}
+
+
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -170,6 +229,8 @@ void flywheel_control() {
   }
 }
 pros::Task flywheelControl(flywheel_control);
+pros::Task indexerControl(indexer_control);
+
 
 const int initial_deadzone = 3;
 const int final_deadzone = 3;
@@ -191,27 +252,33 @@ void opcontrol() {
   drive_brake(MOTOR_BRAKE_BRAKE);
 
   while (true) {
-    int forward = deadzone(master.get_analog(ANALOG_LEFT_Y));
-    int strafe = deadzone(master.get_analog(ANALOG_LEFT_X));
-    int turn = inputcurve(deadzone(master.get_analog(ANALOG_RIGHT_X)));
+    int forward = master.get_analog(ANALOG_LEFT_Y);
+    int strafe = master.get_analog(ANALOG_LEFT_X);
+    int turn = inputcurve(master.get_analog(ANALOG_RIGHT_X));
 
     set_drive(forward, strafe, turn);
 
-    if (master.get_digital_new_press(DIGITAL_L1)) {
+    if (master.get_digital_new_press(DIGITAL_R1)) {
       targetRPM = targetRPM != 0 ? 0 : 3230;
-    } else if (master.get_digital_new_press(DIGITAL_L2)) {
+    } else if (master.get_digital_new_press(DIGITAL_R2)) {
       targetRPM = targetRPM != 0 ? 0 : 3000;
     } else if (master.get_digital_new_press(DIGITAL_UP)) {
       targetRPM = targetRPM != 0 ? 0 : 2800;
     }
 
-    if (master.get_digital(DIGITAL_R1)) {
+    if (master.get_digital(DIGITAL_L1)) {
       set_intake(127);
-    } else if (master.get_digital(DIGITAL_R2)) {
+    } else if (master.get_digital(DIGITAL_L2)) {
       set_intake(-127);
     } else {
       set_intake(0);
     }
+
+
+    if(master.get_digital_new_press(DIGITAL_DOWN) && (indexer_state == 0)) {
+      indexer_state = 1;
+    }
+
 
     pros::delay(10);
   }
