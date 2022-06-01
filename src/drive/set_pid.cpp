@@ -13,6 +13,10 @@ void reset_pid_targets() {
   forwardPID.set_target(0);
   backwardPID.set_target(0);
   turnPID.set_target(0);
+
+  xPID.set_target(0);
+  yPID.set_target(0);
+  aPID.set_target(0);
 }
 
 void set_drive_pid(double target, int speed, bool slew_on, bool toggle_heading) {
@@ -51,7 +55,17 @@ void set_turn_pid(double target, int speed) {
   printf("\n");
 
   headingPID.set_target(target);
-  turnPID.set_target(target);
+  turnPID.set_target(wrap_angle(target));
 
   mode = TURN;
+}
+
+void move_to_point(pose itarget) {
+  target = itarget;
+
+  xPID.set_target(target.x);
+  yPID.set_target(target.y);
+  aPID.set_target(target.theta);
+
+  mode = TO_POINT;
 }

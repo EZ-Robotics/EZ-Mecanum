@@ -33,6 +33,17 @@ double wrap_angle(double theta) {
   return theta;
 }
 
+// Finds error in shortest angle to point
+double angle_to_point(double x_target, double y_target) {
+  // Difference in target to current (legs of triangle)
+  double x_error = x_target - current.x;
+  double y_error = y_target - current.y;
+
+  // Displacement of error
+  double error = to_deg(atan2(x_error, y_error)) /*- get_angle()*/;
+  return error;
+}
+
 std::string exit_to_string(exit_output input) {
   switch ((int)input) {
     case RUNNING:

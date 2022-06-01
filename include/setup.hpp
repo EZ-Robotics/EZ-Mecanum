@@ -38,7 +38,7 @@ inline pros::Imu imu(7);
 inline pros::Motor flywheel(4, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_DEGREES);  // this makes rpm in degrees
 inline pros::Motor intake(3);
 inline pros::ADIDigitalOut indexerPiston('A');
-inline pros::ADIEncoder center_tracker('C', 'D');
+inline pros::ADIEncoder center_tracker('C', 'D', true);
 inline pros::ADIEncoder left_tracker('E', 'F');
 inline pros::ADIEncoder right_tracker('G', 'H');
 

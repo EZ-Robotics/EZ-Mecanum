@@ -15,7 +15,8 @@ double get_angle();
 void reset_trackers();
 void set_angle(double input);
 
-void set_drive(int forward, int strafe, int turn);
+void raw_set_drive(int x, int y, int a);
+void set_drive(int x, int y, int a);
 void drive_brake(pros::motor_brake_mode_e_t input);
 int deadzone(int input);
 

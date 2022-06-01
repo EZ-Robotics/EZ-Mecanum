@@ -10,7 +10,12 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 double get_center() { return center_tracker.get_value() / (TICK_PER_REV / (WHEEL_DIA * M_PI)); }
 double get_left() { return left_tracker.get_value() / (TICK_PER_REV / (WHEEL_DIA * 3.1415)); }
 double get_right() { return right_tracker.get_value() / (TICK_PER_REV / (WHEEL_DIA * 3.1415)); }
-double get_angle() { return imu.get_rotation(); }
+
+double get_angle() {
+  // return wrap_angle(imu.get_rotation());
+  // return wrap_angle(current.theta);
+  return current.theta;
+}
 
 void reset_trackers() {
   center_tracker.reset();
@@ -27,11 +32,11 @@ void set_angle(double input) {
 }
 
 // For internal use only
-void raw_set_drive(int forward, int strafe, int turn) {
-  int fl = forward + turn + strafe;
-  int bl = forward + turn - strafe;
-  int fr = forward - turn - strafe;
-  int br = forward - turn + strafe;
+void raw_set_drive(int x, int y, int a) {
+  int fl = x + y + a;
+  int bl = -x + y + a;
+  int fr = -x + y - a;
+  int br = x + y - a;
 
   l1_front = fl;
   l2_front = fl;
@@ -58,9 +63,9 @@ void set_right(int input) {
 }
 
 // For external use only
-void set_drive(int forward, int strafe, int turn) {
+void set_drive(int x, int y, int a) {
   mode = DISABLED;
-  raw_set_drive(forward, strafe, turn);
+  raw_set_drive(x, y, a);
 }
 
 // Brake drive
@@ -91,9 +96,9 @@ double inputcurve(int x) {
 
 // Opcontrol
 void joystick_control() {
-  int forward = master.get_analog(ANALOG_LEFT_Y);
-  int strafe = master.get_analog(ANALOG_LEFT_X);
-  int turn = inputcurve(master.get_analog(ANALOG_RIGHT_X));
+  int y = master.get_analog(ANALOG_LEFT_Y);
+  int x = master.get_analog(ANALOG_LEFT_X);
+  int a = inputcurve(master.get_analog(ANALOG_RIGHT_X));
 
-  set_drive(forward, strafe, turn);
+  set_drive(x, y, a);
 }

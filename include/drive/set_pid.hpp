@@ -16,7 +16,12 @@ inline PID turnPID(2);
 inline PID leftPID(0);
 inline PID rightPID(0);
 
+inline PID yPID(10, 0, 0, 0);
+inline PID xPID(10, 0, 0, 0);
+inline PID aPID(5, 0, 0, 0);
+
 void reset_pid_targets();
 
 void set_drive_pid(double target, int speed, bool slew_on = false, bool toggle_heading = false);
 void set_turn_pid(double target, int speed);
+void move_to_point(pose itarget);

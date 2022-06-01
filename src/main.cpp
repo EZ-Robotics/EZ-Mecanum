@@ -9,9 +9,10 @@ void initialize() {
   master.rumble(".");
 
   reset_trackers();
+  reset_odom();
 
   pros::lcd::initialize();
-  pros::lcd::set_background_color(255, 110, 199);
+  pros::lcd::set_background_color(255, 110, 199);  // ez pink
 }
 
 // Runs while the robot is in disabled at on a competition.
@@ -23,13 +24,12 @@ void competition_initialize() {}
 // Runs the user autonomous code.
 void autonomous() {
   reset_trackers();
+  reset_odom();
   reset_pid_targets();
   imu.set_heading(0);
-  drive_brake(MOTOR_BRAKE_HOLD);
+  drive_brake(MOTOR_BRAKE_COAST);
 
-
-  set_turn_pid(90, 110);
-  pros::delay(1000);
+  move_to_point({18, 18, -45});
 }
 
 // Runs the operator control code.
@@ -39,7 +39,7 @@ void opcontrol() {
 
   while (true) {
     // printf("C: %.1f  L: %.1f  R: %.1f  \n", get_center(), get_left(), get_right());
-    printf("x: %.1f  y: %.1f  theta: %.1f \n", current.x, current.y, current.theta);
+    // printf("x: %.1f  y: %.1f  theta: %.1f \n", current.x, current.y, current.theta);
     // printf("theta: %f    anle: %f \n", current.theta, get_angle());
 
     flywheel_opcontrol();
