@@ -27,9 +27,10 @@ void autonomous() {
   reset_odom();
   reset_pid_targets();
   imu.set_heading(0);
-  drive_brake(MOTOR_BRAKE_COAST);
+  drive_brake(MOTOR_BRAKE_HOLD);
 
-  move_to_point({18, 18, -45});
+  //move_to_point({18, 18});
+  set_turn_pid(angle_to_point(12, -12), 110);
 }
 
 // Runs the operator control code.

@@ -60,6 +60,12 @@ void turn_pid_task() {
 }
 
 void point_to_point() {
+  // Set angle target
+  // if distance to target is less then some value and fast move is on
+  //   set angle to target.theta
+  // else 
+  //   set angle to face point
+
   // Compute PID
   xPID.compute(current.x);
   yPID.compute(current.y);
@@ -67,31 +73,28 @@ void point_to_point() {
 
   // Vector math
   double angle = to_rad(get_angle());
-  double raw_x_power = (xPID.output * cos(angle)) - (yPID.output * sin(angle));
-  double raw_y_power = (yPID.output * cos(angle)) + (xPID.output * sin(angle));
-  double raw_a_power = aPID.output;
+  double x_raw_output = (xPID.output * cos(angle)) - (yPID.output * sin(angle));
+  double y_raw_output = (yPID.output * cos(angle)) + (xPID.output * sin(angle));
+  double a_raw_output = aPID.output;
 
   // Set output powers
-  int x_output = raw_x_power;
-  int y_output = raw_y_power;
-  int a_output = clip_num(raw_a_power, 60, -60);
+  int x_output = x_raw_output;
+  int y_output = y_raw_output;
+  int a_output = clip_num(a_raw_output, 60, -60);
   int max_xy = 110;
 
-  // Vector scaling 
-  if (fabs(raw_x_power) > max_xy || fabs(raw_y_power) > max_xy) {
-    if (fabs(raw_x_power) > fabs(raw_y_power)) {
-      double scale = max_xy / fabs(raw_x_power);
-      x_output = clip_num(raw_x_power, max_xy, -max_xy);
-      y_output = raw_y_power * scale;
+  // Vector scaling
+  if (fabs(x_raw_output) > max_xy || fabs(y_raw_output) > max_xy) {
+    if (fabs(x_raw_output) > fabs(y_raw_output)) {
+      double scale = max_xy / fabs(x_raw_output);
+      x_output = clip_num(x_raw_output, max_xy, -max_xy);
+      y_output = y_raw_output * scale;
     } else {
-      double scale = max_xy / fabs(raw_y_power);
-      x_output = raw_x_power * scale;
-      y_output = clip_num(raw_y_power, max_xy, -max_xy);
+      double scale = max_xy / fabs(y_raw_output);
+      x_output = x_raw_output * scale;
+      y_output = clip_num(y_raw_output, max_xy, -max_xy);
     }
-  } else {
-    x_output = raw_x_power;
-    y_output = raw_y_power;
-  }
+  } 
 
   // Set motors
   raw_set_drive(x_output, y_output, a_output);

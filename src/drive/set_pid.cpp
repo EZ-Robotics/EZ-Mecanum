@@ -61,11 +61,24 @@ void set_turn_pid(double target, int speed) {
 }
 
 void move_to_point(pose itarget) {
+  fast_move = false;
+
   target = itarget;
 
   xPID.set_target(target.x);
   yPID.set_target(target.y);
   aPID.set_target(target.theta);
+
+  mode = TO_POINT;
+}
+
+void fast_to_point(pose itarget) {
+  fast_move = true;
+
+  target = itarget;
+
+  xPID.set_target(target.x);
+  yPID.set_target(target.y);
 
   mode = TO_POINT;
 }
