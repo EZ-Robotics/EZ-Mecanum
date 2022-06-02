@@ -49,13 +49,14 @@ void set_drive_pid(double target, int speed, bool slew_on, bool toggle_heading) 
   mode = DRIVE;
 }
 
-void set_turn_pid(double target, int speed) {
+void set_turn_pid(double itarget, int speed) {
   // Print targets
-  printf("Turn Started... Target Value: %f ", target);
+  printf("Turn Started... Target Value: %f ", itarget);
   printf("\n");
 
-  headingPID.set_target(target);
-  turnPID.set_target(wrap_angle(target));
+  headingPID.set_target(itarget);
+  turnPID.set_target(itarget);
+  target.theta = itarget;
 
   mode = TURN;
 }

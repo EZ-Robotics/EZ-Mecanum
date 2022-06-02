@@ -61,9 +61,14 @@ double clip_num(double input, double max, double min);
 double wrap_angle(double theta);
 
 /**
- * Outputs angle to point
+ * Outputs absolute angle to point
  */
-double angle_to_point(double x_target, double y_target);
+double absolute_angle_to_point(double x_target, double y_target);
+
+/**
+ * Outputs relative angle to point (error)
+ */
+double relative_angle_to_point(double angle);
 
 /**
  * Returns 1 if input is positive and -1 if input is negative

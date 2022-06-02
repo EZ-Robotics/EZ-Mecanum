@@ -91,7 +91,7 @@ int deadzone(int input) {
 double inputcurve(int x) {
   double e = 2.718;
   double t = 2.1;
-  return (powf(e, -(t / 10)) + powf(e, ((abs(x) - 127) / 10)) * (1 - powf(e, -(t / 10)))) * x;
+  return (powf(e, -(t / 10)) + powf(e, ((fabs(x) - 127) / 10)) * (1 - powf(e, -(t / 10)))) * x;
 }
 
 // Opcontrol

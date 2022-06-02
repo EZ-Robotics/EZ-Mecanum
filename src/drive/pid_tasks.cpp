@@ -48,8 +48,9 @@ void drive_pid_task() {
 }
 
 void turn_pid_task() {
-  // Compute PID
-  turnPID.compute(get_angle());
+  // Comute turn PID and find shortest path to angle
+  turnPID.set_target(relative_angle_to_point(target.theta));
+  turnPID.compute(0);
 
   // Clip outpout power
   int turn_out = clip_num(turnPID.output, 110, -110);
@@ -63,13 +64,16 @@ void point_to_point() {
   // Set angle target
   // if distance to target is less then some value and fast move is on
   //   set angle to target.theta
-  // else 
+  // else
   //   set angle to face point
 
   // Compute PID
   xPID.compute(current.x);
   yPID.compute(current.y);
-  aPID.compute(get_angle());
+
+  // Comute angle PID and find shortest path to angle
+  aPID.set_target(relative_angle_to_point(absolute_angle_to_point(target.x, target.y)));
+  aPID.compute(0);
 
   // Vector math
   double angle = to_rad(get_angle());
@@ -94,7 +98,7 @@ void point_to_point() {
       x_output = x_raw_output * scale;
       y_output = clip_num(y_raw_output, max_xy, -max_xy);
     }
-  } 
+  }
 
   // Set motors
   raw_set_drive(x_output, y_output, a_output);

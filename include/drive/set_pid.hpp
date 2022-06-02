@@ -23,6 +23,6 @@ inline PID aPID(5);
 void reset_pid_targets();
 
 void set_drive_pid(double target, int speed, bool slew_on = false, bool toggle_heading = false);
-void set_turn_pid(double target, int speed);
+void set_turn_pid(double itarget, int speed);
 void move_to_point(pose itarget);
 void fast_to_point(pose itarget);
