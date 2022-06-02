@@ -22,7 +22,7 @@ enum e_mode { DISABLE = 0,
               TO_POINT = 4 };
 
 /**
- * Enum for PID::exit_condition outputs.
+ * Enum for exit_condition outputs.
  */
 enum exit_output { RUNNING = 1,
                    SMALL_EXIT = 2,
@@ -30,6 +30,20 @@ enum exit_output { RUNNING = 1,
                    VELOCITY_EXIT = 4,
                    mA_EXIT = 5,
                    ERROR_NO_CONSTANTS = 6 };
+
+/**
+ * Enum for direction
+ */
+enum direction { FWD = 0,
+                 FORWARD = 0,
+                 F = 0,
+                 FORWARDS = 0,
+                 REV = 1,
+                 REVERSED = 1,
+                 BACKWARD = 1,
+                 BACKWARDS = 1,
+                 R = 1,
+                 B = 1 };
 
 /**
  * Struct for coordinates
@@ -69,6 +83,11 @@ double absolute_angle_to_point(double x_target, double y_target);
  * Outputs relative angle to point (error)
  */
 double relative_angle_to_point(double angle);
+
+/**
+ * Outputs distance to point (hypot)
+ */
+double distance_to_point(double x_target, double y_target);
 
 /**
  * Returns 1 if input is positive and -1 if input is negative

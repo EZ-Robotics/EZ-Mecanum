@@ -6,16 +6,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "main.h"
 
-void set_x(double x) {
-  current.x = x;
-  target.x = x;
-}
-
-void set_y(double y) {
-  current.y = y;
-  target.y = y;
-}
-
+void set_x(double x) { current.x = x; }
+void set_y(double y) { current.y = y; }
 void set_theta(double a) { set_angle(a); }
 void reset_odom() { set_pose({0, 0, 0}); }
 

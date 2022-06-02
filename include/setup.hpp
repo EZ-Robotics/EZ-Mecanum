@@ -51,7 +51,7 @@ inline const double WHEEL_DIA = 2.0;
 
 // Tracking wheel offsets
 inline const double WIDTH = 6.87;  // biger means angle will grow
-inline const double CENTER_OFFSET = 3.0;
+inline const double CENTER_OFFSET = -2.0;
 
 // ignore these unless the left/right tracker aren't mounted symetrically
 inline const double RIGHT_OFFSET = WIDTH / 2.0;

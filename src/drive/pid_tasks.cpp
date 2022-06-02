@@ -61,19 +61,33 @@ void turn_pid_task() {
 }
 
 void point_to_point() {
+  // Add for direction
+  int add = dir == REV ? 180 : 0;
+
   // Set angle target
-  // if distance to target is less then some value and fast move is on
-  //   set angle to target.theta
-  // else
-  //   set angle to face point
+  double a_target;
+  if (fast_move) {
+    if (fabs(distance_to_point(target.x, target.y)) < 12) {
+      only_look_at_point = false;
+      a_target = target.theta;
+    } else {
+      only_look_at_point = true;
+    }
+  } else {
+    a_target = target.theta;
+  }
+
+  if (only_look_at_point) {
+    a_target = absolute_angle_to_point(target.x, target.y) + add;
+  }
+
+  // Comute angle PID and find shortest path to angle
+  aPID.set_target(relative_angle_to_point(a_target));
+  aPID.compute(0);
 
   // Compute PID
   xPID.compute(current.x);
   yPID.compute(current.y);
-
-  // Comute angle PID and find shortest path to angle
-  aPID.set_target(relative_angle_to_point(absolute_angle_to_point(target.x, target.y)));
-  aPID.compute(0);
 
   // Vector math
   double angle = to_rad(get_angle());

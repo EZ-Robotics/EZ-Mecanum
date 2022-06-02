@@ -10,12 +10,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 double get_center() { return center_tracker.get_value() / (TICK_PER_REV / (WHEEL_DIA * M_PI)); }
 double get_left() { return left_tracker.get_value() / (TICK_PER_REV / (WHEEL_DIA * 3.1415)); }
 double get_right() { return right_tracker.get_value() / (TICK_PER_REV / (WHEEL_DIA * 3.1415)); }
-
-double get_angle() {
-  // return wrap_angle(imu.get_rotation());
-  // return wrap_angle(current.theta);
-  return current.theta;
-}
+double get_angle() { return current.theta; }
 
 void reset_trackers() {
   center_tracker.reset();
@@ -48,6 +43,12 @@ void raw_set_drive(int x, int y, int a) {
   r2_back = br;
 }
 
+// For external use only
+void set_drive(int x, int y, int a) {
+  mode = DISABLED;
+  raw_set_drive(x, y, a);
+}
+
 void set_left(int input) {
   l1_front = input;
   l2_front = input;
@@ -60,12 +61,6 @@ void set_right(int input) {
   r2_front = input;
   r1_back = input;
   r2_back = input;
-}
-
-// For external use only
-void set_drive(int x, int y, int a) {
-  mode = DISABLED;
-  raw_set_drive(x, y, a);
 }
 
 // Brake drive

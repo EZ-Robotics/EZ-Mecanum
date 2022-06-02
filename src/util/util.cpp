@@ -48,6 +48,18 @@ double relative_angle_to_point(double angle) {
   return wrap_angle(angle - get_angle());
 }
 
+// Find shortest distance to point
+double distance_to_point(double x_target, double y_target) {
+  // Difference in target to current (legs of triangle)
+  double x_error = (x_target - current.x);
+  double y_error = (y_target - current.y);
+
+  // Hypotenuse of triangle 
+  double distance = hypot(x_error, y_error);
+
+  return distance;
+}
+
 std::string exit_to_string(exit_output input) {
   switch ((int)input) {
     case RUNNING:

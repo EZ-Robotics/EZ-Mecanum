@@ -29,7 +29,15 @@ void autonomous() {
   imu.set_heading(0);
   drive_brake(MOTOR_BRAKE_HOLD);
 
-  // ...
+  fast_to_point({0, 36, -22.5}, FWD);
+  pros::delay(2000);
+
+  move_to_point({0, 0, 22.5});
+  pros::delay(2000);
+
+  // move_to_point({0, 0, 0});
+
+  // set_turn_pid(90, 110);
 }
 
 // Runs the operator control code.
@@ -38,10 +46,6 @@ void opcontrol() {
   drive_brake(MOTOR_BRAKE_BRAKE);
 
   while (true) {
-    // printf("C: %.1f  L: %.1f  R: %.1f  \n", get_center(), get_left(), get_right());
-    // printf("x: %.1f  y: %.1f  theta: %.1f \n", current.x, current.y, current.theta);
-    // printf("theta: %f    anle: %f \n", current.theta, get_angle());
-
     flywheel_opcontrol();
     joystick_control();
     indexer_opcontrol();

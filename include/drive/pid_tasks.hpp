@@ -9,5 +9,3 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 void drive_pid_task();
 void turn_pid_task();
 void point_to_point();
-
-inline bool fast_move = false;
