@@ -22,6 +22,7 @@ void set_angle(double input) {
   headingPID.set_target(input);
   angle_rad = to_rad(input);
   angle_rad = to_rad(input);
+  imu.set_rotation(input);
   target.theta = input;
   current.theta = input;
 }

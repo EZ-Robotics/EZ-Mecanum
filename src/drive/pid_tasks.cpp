@@ -20,6 +20,9 @@ void auto_task() {
       case TO_POINT:
         point_to_point();
         break;
+      case PURE_PURSUIT:
+        pure_pursuit();
+        break;
       default:
         break;
     }
@@ -35,11 +38,11 @@ void drive_pid_task() {
   // Compute PID
   leftPID.compute(get_left());
   rightPID.compute(get_right());
-  headingPID.compute(get_angle());
+  headingPID.compute(imu.get_rotation());
 
   // Clip output power
-  int l_drive_out = clip_num(leftPID.output, 110, -110);
-  int r_drive_out = clip_num(rightPID.output, 110, -110);
+  int l_drive_out = clip_num(leftPID.output, max_xy, -max_xy);
+  int r_drive_out = clip_num(rightPID.output, max_xy, -max_xy);
   int h_out = clip_num(headingPID.output, 127, -127);
 
   // Set motors
@@ -49,11 +52,10 @@ void drive_pid_task() {
 
 void turn_pid_task() {
   // Comute turn PID and find shortest path to angle
-  turnPID.set_target(relative_angle_to_point(target.theta));
-  turnPID.compute(0);
+  aPID.compute(imu.get_rotation());
 
   // Clip outpout power
-  int turn_out = clip_num(turnPID.output, 110, -110);
+  int turn_out = clip_num(aPID.output, max_a, -max_a);
 
   // Set motors
   set_left(turn_out);
@@ -65,20 +67,26 @@ void point_to_point() {
   int add = dir == REV ? 180 : 0;
 
   // Set angle target
-  double a_target;
-  if (fast_move) {
-    if (fabs(distance_to_point(target.x, target.y)) < 12) {
-      only_look_at_point = false;
+  switch (current_turn_type) {
+    // Looks at target until final distance then goes to final angle
+    case FAST_MOVE:
+      if (fabs(distance_to_point(target.x, target.y)) < 12) {
+        a_target = target.theta;
+      } else {
+        a_target = absolute_angle_to_point(target.x, target.y) + add;
+      }
+      break;
+    // Looks at target the entire motion
+    case LOOK_AT_TARGET:
+      if (fabs(distance_to_point(target.x, target.y)) > 2) {
+        a_target = absolute_angle_to_point(target.x, target.y) + add;
+      }
+      break;
+    // Holds angle the entire motion
+    case HOLD_ANGLE:
       a_target = target.theta;
-    } else {
-      only_look_at_point = true;
-    }
-  } else {
-    a_target = target.theta;
-  }
-
-  if (only_look_at_point) {
-    a_target = absolute_angle_to_point(target.x, target.y) + add;
+    default:
+      break;
   }
 
   // Comute angle PID and find shortest path to angle
@@ -98,8 +106,7 @@ void point_to_point() {
   // Set output powers
   int x_output = x_raw_output;
   int y_output = y_raw_output;
-  int a_output = clip_num(a_raw_output, 60, -60);
-  int max_xy = 110;
+  int a_output = clip_num(a_raw_output, max_a, -max_a);
 
   // Vector scaling
   if (fabs(x_raw_output) > max_xy || fabs(y_raw_output) > max_xy) {
@@ -116,4 +123,17 @@ void point_to_point() {
 
   // Set motors
   raw_set_drive(x_output, y_output, a_output);
+}
+
+void pure_pursuit() {
+  raw_move_odom(movements[pp_index]);
+
+  if (fabs(distance_to_point(movements[pp_index].target.x, movements[pp_index].target.y)) < 5) {
+    pp_index++;
+    if (pp_index >= movements.size()) {
+      pp_index = movements.size() - 1;
+    }
+  }
+
+  point_to_point();
 }

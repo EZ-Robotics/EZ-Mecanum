@@ -10,6 +10,13 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "pros/adi.hpp"
 
 /**
+ * Auton Tuned Default Speeds
+ */
+#define MAX_XY 110
+#define MAX_A 75
+#define TURN_SPEED 90
+
+/**
  * Ports
  */
 /*
@@ -33,6 +40,11 @@ inline pros::Motor r1_front(18, true);
 inline pros::Motor r2_front(17);
 inline pros::Motor l1_back(14, true);
 inline pros::Motor l2_back(12);
+
+inline const std::vector<pros::Motor> left_motors = {l1_front, l2_front, l1_back, l2_back};
+inline const std::vector<pros::Motor> right_motors = {r1_front, r2_front, r1_back, r2_back};
+inline const std::vector<pros::Motor> all_motors = {l1_front, l2_front, r1_back, r2_back, r1_front, r2_front, l1_back, l2_back};
+
 inline pros::Imu imu(7);
 //*/
 inline pros::Motor flywheel(4, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_DEGREES);  // this makes rpm in degrees
@@ -50,7 +62,7 @@ inline const int TICK_PER_REV = 8096;
 inline const double WHEEL_DIA = 2.0;
 
 // Tracking wheel offsets
-inline const double WIDTH = 6.87;  // biger means angle will grow
+inline double WIDTH = 7;  // biger means angle will grow
 inline const double CENTER_OFFSET = -2.0;
 
 // ignore these unless the left/right tracker aren't mounted symetrically

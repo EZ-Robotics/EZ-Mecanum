@@ -49,6 +49,7 @@
 #include "drive/drive.hpp"
 #include "drive/set_pid.hpp"
 #include "drive/pid_tasks.hpp"
+#include "drive/exit_conditions.hpp"
 
 #include "util/util.hpp"
 #include "util/pid.hpp"
@@ -56,6 +57,8 @@
 #include "flywheel.hpp"
 #include "indexer.hpp"
 #include "intake.hpp"
+
+#include "autons.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do

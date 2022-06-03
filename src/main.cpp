@@ -1,3 +1,9 @@
+/*
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
 #include "main.h"
 
 // This occurs as soon as the program starts.
@@ -10,6 +16,8 @@ void initialize() {
 
   reset_trackers();
   reset_odom();
+
+  set_pid_defaults();
 
   pros::lcd::initialize();
   pros::lcd::set_background_color(255, 110, 199);  // ez pink
@@ -26,24 +34,13 @@ void autonomous() {
   reset_trackers();
   reset_odom();
   reset_pid_targets();
-  imu.set_heading(0);
   drive_brake(MOTOR_BRAKE_HOLD);
-
-  fast_to_point({0, 36, -22.5}, FWD);
-  pros::delay(2000);
-
-  move_to_point({0, 0, 22.5});
-  pros::delay(2000);
-
-  // move_to_point({0, 0, 0});
-
-  // set_turn_pid(90, 110);
 }
 
 // Runs the operator control code.
 void opcontrol() {
   // Drive brake, this is preference
-  drive_brake(MOTOR_BRAKE_BRAKE);
+  drive_brake(MOTOR_BRAKE_HOLD);
 
   while (true) {
     flywheel_opcontrol();
@@ -51,6 +48,6 @@ void opcontrol() {
     indexer_opcontrol();
     intake_opcontrol();
 
-    pros::delay(DELAY_TIME);
+    pros::delay(100);
   }
 }

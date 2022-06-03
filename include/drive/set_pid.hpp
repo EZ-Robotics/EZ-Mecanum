@@ -8,14 +8,15 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "util/pid.hpp"
 
-inline bool fast_move = false;
-inline bool only_look_at_point = false;
-inline direction dir = FWD;
+inline double a_target = 0;
+inline int pp_index = 0;
+inline int max_xy = MAX_XY;
+inline int max_a = MAX_A;
+inline turn_types current_turn_type = HOLD_ANGLE;
+inline edirection dir = FWD;
+inline std::vector<odom> movements;
 
 inline PID headingPID(1);
-inline PID forwardPID(3);
-inline PID backwardPID(3);
-inline PID turnPID(2);
 
 inline PID leftPID(0);
 inline PID rightPID(0);
@@ -25,8 +26,11 @@ inline PID xPID(22.5, 0, 250, 0);
 inline PID aPID(5, 0, 35, 0);
 
 void reset_pid_targets();
+void raw_move_odom(odom imovement);
 
-void set_drive_pid(double target, int speed, bool slew_on = false, bool toggle_heading = false);
-void set_turn_pid(double itarget, int speed);
-void move_to_point(pose itarget);
-void fast_to_point(pose itarget, direction idir);
+void drive_pid(double target, int speed = MAX_XY);
+void imu_pid(double itarget, int speed = TURN_SPEED);
+
+void turn_pid(double itarget, int speed = TURN_SPEED);
+void move_to_point(odom imovement);
+void pure_pursuit(std::vector<odom> imovements);
