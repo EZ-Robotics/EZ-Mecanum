@@ -21,7 +21,7 @@ void reset_pid_targets() {
 
 void drive_pid(double target, int speed) {
   // Print targets
-  printf("Drive Started... Target Value: %f \n", target);
+  printf("Drive Started... Target Distance: %f \n", target);
   reset_trackers();
 
   // Max speed
@@ -37,7 +37,7 @@ void drive_pid(double target, int speed) {
 // Set turn PID, for external use
 void imu_pid(double itarget, int speed) {
   // Print targets
-  printf("IMU Turn Started... Target Value: %f ", itarget);
+  printf("IMU Turn Started... Target Degree: %f ", itarget);
   printf("\n");
 
   max_a = abs(speed);
@@ -51,7 +51,6 @@ void imu_pid(double itarget, int speed) {
 void raw_move_odom(odom imovement) {
   current_turn_type = imovement.turn_type;
   target = imovement.target;
-  dir = imovement.dir;
   max_xy = abs(imovement.max_xy_speed);
   max_a = abs(imovement.max_turn_speed);
   xPID.set_target(target.x);
@@ -61,7 +60,7 @@ void raw_move_odom(odom imovement) {
 // Set turn PID, for external use
 void odom_turn(double itarget, int speed) {
   // Print targets
-  printf("Odom Turn Started... Target Value: (%f, %f, %f) \n", target.x, target.y, itarget);
+  printf("Odom Turn Started... Target Coordinates: (%f, %f, %f) \n", target.x, target.y, itarget);
 
   headingPID.set_target(itarget);
 
@@ -78,7 +77,7 @@ void relative_move_to_point(double distance, int speed) {
   pose output = vector_off_point(distance, target);
 
   // Print targets
-  printf("Relative Odom Motion Started... Target Value: (%f, %f, %f) \n", output.x, output.y, output.theta);
+  printf("Relative Odom Motion Started... Target Coordinates: (%f, %f, %f) \n", output.x, output.y, output.theta);
 
   // Run raw odom
   raw_move_odom({output, HOLD_ANGLE, speed, MAX_A});
@@ -90,7 +89,7 @@ void relative_move_to_point(double distance, int speed) {
 // Move point to point, for external use
 void move_to_point(odom imovement) {
   // Print targets
-  printf("Odom Motion Started... Target Value: (%f, %f, %f) \n", imovement.target.x, imovement.target.y, imovement.target.theta);
+  printf("Odom Motion Started... Target Coordinates: (%f, %f, %f) \n", imovement.target.x, imovement.target.y, imovement.target.theta);
 
   // Set new targets
   raw_move_odom(imovement);
@@ -102,7 +101,26 @@ void move_to_point(odom imovement) {
 // Pure pursuit, for external use
 void pure_pursuit(std::vector<odom> imovements) {
   // Print targets
-  printf("Pure Pursuit Motion Started... Target Value: \n");
+  printf("Pure Pursuit Motion Started... Target Coordinates: \n");
+  for (int i = 0; i < imovements.size(); i++) {
+    printf(" Point %i: (%f, %f, %f)\n", i + 1, imovements[i].target.x, imovements[i].target.y, imovements[i].target.theta);
+  }
+
+  // Reset indexes and previous movements
+  movements.clear();
+  pp_index = 0;
+
+  // Set new targets
+  movements = imovements;
+
+  // Run pure_pursuit()
+  mode = PURE_PURSUIT;
+}
+
+// Pure pursuit, for external use
+void injected_pure_pursuit(std::vector<odom> imovements) {
+  // Print targets
+  printf("Point Injected Pure Pursuit Motion Started... Target Coordinates: \n");
   for (int i = 0; i < imovements.size(); i++) {
     printf(" Point %i: (%f, %f, %f)\n", i + 1, imovements[i].target.x, imovements[i].target.y, imovements[i].target.theta);
   }

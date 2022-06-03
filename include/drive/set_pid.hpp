@@ -13,7 +13,6 @@ inline int pp_index = 0;
 inline int max_xy = MAX_XY;
 inline int max_a = MAX_A;
 inline turn_types current_turn_type = HOLD_ANGLE;
-inline edirection dir = FWD;
 inline std::vector<odom> movements;
 
 inline PID headingPID(1);
@@ -35,3 +34,4 @@ void odom_turn(double itarget, int speed = TURN_SPEED);
 void relative_move_to_point(double distance, int speed = MAX_XY);
 void move_to_point(odom imovement);
 void pure_pursuit(std::vector<odom> imovements);
+void injected_pure_pursuit(std::vector<odom> imovements);

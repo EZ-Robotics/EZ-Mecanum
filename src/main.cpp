@@ -36,11 +36,11 @@ void autonomous() {
   reset_pid_targets();
   drive_brake(MOTOR_BRAKE_HOLD);
 
-  pure_pursuit({
-      {{0, 24, 90}, HOLD_ANGLE},
-      {{24, 24, 180}, HOLD_ANGLE},
-      {{24, 0, 270}, HOLD_ANGLE},
-      {{0, 0, 0}, HOLD_ANGLE},
+  injected_pure_pursuit({
+      {{0, 24, 90}, FAST_MOVE_FWD},
+      {{24, 24, 180}, FAST_MOVE_FWD},
+      {{24, 0, 270}, FAST_MOVE_FWD},
+      {{0, 0, 0}, FAST_MOVE_FWD},
   });
 }
 

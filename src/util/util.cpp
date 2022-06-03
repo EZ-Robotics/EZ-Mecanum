@@ -4,6 +4,8 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+#include "util.hpp"
+
 #include "main.h"
 
 bool AUTON_RAN = true;
@@ -75,7 +77,7 @@ pose vector_off_point(double added, pose icurrent) {
 std::vector<odom> inject_points(std::vector<odom> imovements) {
   // Create new vector that includes the starting point
   std::vector<odom> input = imovements;
-  input.insert(input.begin(), {{{target.x, target.x, imovements[0].target.theta}, imovements[0].turn_type, imovements[0].max_xy_speed, imovements[0].max_turn_speed, imovements[0].dir}});
+  input.insert(input.begin(), {{{target.x, target.x, imovements[0].target.theta}, imovements[0].turn_type, imovements[0].max_xy_speed, imovements[0].max_turn_speed}});
 
   std::vector<odom> output;  // Output vector
   int output_index = -1;     // Keeps track of current index
@@ -95,12 +97,19 @@ std::vector<odom> inject_points(std::vector<odom> imovements) {
       double angle_to_point = absolute_angle_to_point(input[i + 1].target, input[i].target);
       pose new_point = vector_off_point(SPACING, {output[output_index].target.x, output[output_index].target.y, angle_to_point});
 
+      // Make sure the robot is looking at next point
+      turn_types turn;
+      if ((input[i + 1].turn_type == FAST_MOVE_REV || input[i + 1].turn_type == FAST_MOVE_FWD) && fabs(distance_to_point(input[i + 1].target, new_point)) > TURN_FAST_MOVE) {
+        turn = LOOK_AT_TARGET;
+      } else {
+        turn = input[i + 1].turn_type;
+      }
+
       // Push new point to vector
       output.push_back({{new_point.x, new_point.y, input[i + 1].target.theta},
-                        input[i + 1].turn_type,
+                        turn,
                         input[i + 1].max_xy_speed,
-                        input[i + 1].max_turn_speed,
-                        input[i + 1].dir});
+                        input[i + 1].max_turn_speed});
       output_index++;
     }
     // Make sure the final point is there
@@ -112,6 +121,7 @@ std::vector<odom> inject_points(std::vector<odom> imovements) {
   return output;
 }
 
+// Print exit conditions
 std::string exit_to_string(exit_output input) {
   switch ((int)input) {
     case RUNNING:
@@ -126,6 +136,24 @@ std::string exit_to_string(exit_output input) {
       return "mA";
     case ERROR_NO_CONSTANTS:
       return "Error: Exit condition constants not set!";
+    default:
+      return "Error: Out of bounds!";
+  }
+
+  return "Error: Out of bounds!";
+}
+
+// Print turn types
+std::string turn_types_to_string(turn_types input) {
+  switch ((int)input) {
+    case FAST_MOVE_REV:
+      return "Fast Move Rev";
+    case FAST_MOVE_FWD:
+      return "Fast Move FWD";
+    case LOOK_AT_TARGET:
+      return "Look At Target";
+    case HOLD_ANGLE:
+      return "Hold Angle";
     default:
       return "Error: Out of bounds!";
   }

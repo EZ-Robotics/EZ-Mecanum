@@ -34,25 +34,12 @@ enum exit_output { RUNNING = 1,
                    ERROR_NO_CONSTANTS = 6 };
 
 /**
- * Enum for direction
- */
-enum edirection { FWD = 0,
-                  FORWARD = 0,
-                  F = 0,
-                  FORWARDS = 0,
-                  REV = 1,
-                  REVERSED = 1,
-                  BACKWARD = 1,
-                  BACKWARDS = 1,
-                  R = 1,
-                  B = 1 };
-
-/**
  * Enum for turn types
  */
-enum turn_types { FAST_MOVE = 0,
-                  LOOK_AT_TARGET = 1,
-                  HOLD_ANGLE = 2 };
+enum turn_types { FAST_MOVE_FWD = 0,
+                  FAST_MOVE_REV = 1,
+                  LOOK_AT_TARGET = 2,
+                  HOLD_ANGLE = 3 };
 
 /**
  * Struct for coordinates
@@ -71,13 +58,17 @@ typedef struct odom {
   turn_types turn_type;
   int max_xy_speed = MAX_XY;
   int max_turn_speed = MAX_A;
-  edirection dir = FWD;
 } odom;
 
 /**
  * Outputs string for exit_condition enum.
  */
 std::string exit_to_string(exit_output input);
+
+/**
+ * Outputs string for turn_types enum.
+ */
+std::string turn_types_to_string(turn_types input);
 
 const int DELAY_TIME = 10;
 

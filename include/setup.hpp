@@ -16,8 +16,9 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #define MAX_A 75
 #define TURN_SPEED 90
 
-#define LOOK_AHEAD 6  // Pure pursuit look ahead distance
-#define SPACING 2.0   // Spacing for pure pursuit injected points
+#define TURN_FAST_MOVE 15.0  // When FAST_MOVE, it will turn when within this of target
+#define LOOK_AHEAD 6.0       // Pure pursuit look ahead distance
+#define SPACING 3.0          // Spacing for pure pursuit injected points
 
 /**
  * Ports
@@ -65,7 +66,7 @@ inline const int TICK_PER_REV = 8096;
 inline const double WHEEL_DIA = 2.0;
 
 // Tracking wheel offsets
-inline double WIDTH = 7;  // biger means angle will grow
+inline double WIDTH = 6.86;  // biger means angle will grow
 inline const double CENTER_OFFSET = -2.0;
 
 // ignore these unless the left/right tracker aren't mounted symetrically

@@ -64,13 +64,14 @@ void turn_pid_task() {
 
 void point_to_point() {
   // Add for direction
-  int add = dir == REV ? 180 : 0;
+  int add = current_turn_type == FAST_MOVE_REV ? 180 : 0;
 
   // Set angle target
   switch (current_turn_type) {
     // Looks at target until final distance then goes to final angle
-    case FAST_MOVE:
-      if (fabs(distance_to_point(target, current)) < 12) {
+    case FAST_MOVE_FWD:
+    case FAST_MOVE_REV:
+      if (fabs(distance_to_point(target, current)) < TURN_FAST_MOVE) {
         a_target = target.theta;
       } else {
         a_target = absolute_angle_to_point(target, current) + add;
