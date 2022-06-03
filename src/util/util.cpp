@@ -34,10 +34,10 @@ double wrap_angle(double theta) {
 }
 
 // Finds error in shortest angle to point
-double absolute_angle_to_point(double x_target, double y_target) {
+double absolute_angle_to_point(pose itarget, pose icurrent) {
   // Difference in target to current (legs of triangle)
-  double x_error = x_target - current.x;
-  double y_error = y_target - current.y;
+  double x_error = itarget.x - icurrent.x;
+  double y_error = itarget.y - icurrent.y;
 
   // Displacement of error
   double error = to_deg(atan2(x_error, y_error));
@@ -49,10 +49,10 @@ double relative_angle_to_point(double angle) {
 }
 
 // Find shortest distance to point
-double distance_to_point(double x_target, double y_target) {
+double distance_to_point(pose itarget, pose icurrent) {
   // Difference in target to current (legs of triangle)
-  double x_error = (x_target - current.x);
-  double y_error = (y_target - current.y);
+  double x_error = (itarget.x - icurrent.x);
+  double y_error = (itarget.y - icurrent.y);
 
   // Hypotenuse of triangle
   double distance = hypot(x_error, y_error);
@@ -68,6 +68,47 @@ pose vector_off_point(double added, pose icurrent) {
   output.x = x_error + icurrent.x;
   output.y = y_error + icurrent.y;
   output.theta = icurrent.theta;
+  return output;
+}
+
+// Inject point based on https://www.chiefdelphi.com/t/paper-implementation-of-the-adaptive-pure-pursuit-controller/166552
+std::vector<odom> inject_points(std::vector<odom> imovements) {
+  // Create new vector that includes the starting point
+  std::vector<odom> input = imovements;
+  input.insert(input.begin(), {{{target.x, target.x, imovements[0].target.theta}, imovements[0].turn_type, imovements[0].max_xy_speed, imovements[0].max_turn_speed, imovements[0].dir}});
+
+  std::vector<odom> output;  // Output vector
+  int output_index = -1;     // Keeps track of current index
+
+  // This for loop runs for how many points there are minus one because there is one less vector then points
+  for (int i = 0; i < input.size() - 1; i++) {
+    // Figure out how many points fit in the vector
+    int num_of_points_that_fit = (distance_to_point(input[i + 1].target, input[i].target)) / SPACING;
+
+    // Add the parent point
+    output.push_back(input[i]);
+    output_index++;
+
+    // Add the injected points
+    for (int j = 0; j < num_of_points_that_fit; j++) {
+      // Calculate the new point with known information: hypot and angle
+      double angle_to_point = absolute_angle_to_point(input[i + 1].target, input[i].target);
+      pose new_point = vector_off_point(SPACING, {output[output_index].target.x, output[output_index].target.y, angle_to_point});
+
+      // Push new point to vector
+      output.push_back({{new_point.x, new_point.y, input[i + 1].target.theta},
+                        input[i + 1].turn_type,
+                        input[i + 1].max_xy_speed,
+                        input[i + 1].max_turn_speed,
+                        input[i + 1].dir});
+      output_index++;
+    }
+    // Make sure the final point is there
+    output.push_back(input[i + 1]);
+    output_index++;
+  }
+
+  // Return final vector
   return output;
 }
 

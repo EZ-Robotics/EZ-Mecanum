@@ -16,6 +16,9 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #define MAX_A 75
 #define TURN_SPEED 90
 
+#define LOOK_AHEAD 6  // Pure pursuit look ahead distance
+#define SPACING 2.0   // Spacing for pure pursuit injected points
+
 /**
  * Ports
  */

@@ -70,16 +70,16 @@ void point_to_point() {
   switch (current_turn_type) {
     // Looks at target until final distance then goes to final angle
     case FAST_MOVE:
-      if (fabs(distance_to_point(target.x, target.y)) < 12) {
+      if (fabs(distance_to_point(target, current)) < 12) {
         a_target = target.theta;
       } else {
-        a_target = absolute_angle_to_point(target.x, target.y) + add;
+        a_target = absolute_angle_to_point(target, current) + add;
       }
       break;
     // Looks at target the entire motion
     case LOOK_AT_TARGET:
-      if (fabs(distance_to_point(target.x, target.y)) > 2) {
-        a_target = absolute_angle_to_point(target.x, target.y) + add;
+      if (fabs(distance_to_point(target, current)) > 2) {
+        a_target = absolute_angle_to_point(target, current) + add;
       }
       break;
     // Holds angle the entire motion
@@ -128,7 +128,7 @@ void point_to_point() {
 void pure_pursuit() {
   raw_move_odom(movements[pp_index]);
 
-  if (fabs(distance_to_point(movements[pp_index].target.x, movements[pp_index].target.y)) < 5) {
+  if (fabs(distance_to_point(movements[pp_index].target, current)) < LOOK_AHEAD) {
     pp_index++;
     if (pp_index >= movements.size()) {
       pp_index = movements.size() - 1;

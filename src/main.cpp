@@ -6,8 +6,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "main.h"
 
-#include "drive/set_pid.hpp"
-
 // This occurs as soon as the program starts.
 void initialize() {
   pros::delay(300);
@@ -37,6 +35,13 @@ void autonomous() {
   reset_odom();
   reset_pid_targets();
   drive_brake(MOTOR_BRAKE_HOLD);
+
+  pure_pursuit({
+      {{0, 24, 90}, HOLD_ANGLE},
+      {{24, 24, 180}, HOLD_ANGLE},
+      {{24, 0, 270}, HOLD_ANGLE},
+      {{0, 0, 0}, HOLD_ANGLE},
+  });
 }
 
 // Runs the operator control code.

@@ -112,7 +112,7 @@ void pure_pursuit(std::vector<odom> imovements) {
   pp_index = 0;
 
   // Set new targets
-  movements = imovements;
+  movements = inject_points({imovements});
 
   // Run pure_pursuit()
   mode = PURE_PURSUIT;
