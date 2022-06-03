@@ -6,6 +6,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "main.h"
 
+#include "drive/set_pid.hpp"
+
 // This occurs as soon as the program starts.
 void initialize() {
   pros::delay(300);

@@ -31,6 +31,7 @@ void raw_move_odom(odom imovement);
 void drive_pid(double target, int speed = MAX_XY);
 void imu_pid(double itarget, int speed = TURN_SPEED);
 
-void turn_pid(double itarget, int speed = TURN_SPEED);
+void odom_turn(double itarget, int speed = TURN_SPEED);
+void relative_move_to_point(double distance, int speed = MAX_XY);
 void move_to_point(odom imovement);
 void pure_pursuit(std::vector<odom> imovements);

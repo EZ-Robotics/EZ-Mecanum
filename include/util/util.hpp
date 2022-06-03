@@ -110,6 +110,11 @@ double relative_angle_to_point(double angle);
 double distance_to_point(double x_target, double y_target);
 
 /**
+ * Outputs x,y from a pose
+ */
+pose vector_off_point(double added, pose icurrent);
+
+/**
  * Returns 1 if input is positive and -1 if input is negative
  */
 int sgn(double input);

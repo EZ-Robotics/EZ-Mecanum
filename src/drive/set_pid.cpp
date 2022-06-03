@@ -7,6 +7,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "set_pid.hpp"
 
 #include "main.h"
+#include "util/util.hpp"
 
 void reset_pid_targets() {
   headingPID.set_target(0);
@@ -58,14 +59,31 @@ void raw_move_odom(odom imovement) {
 }
 
 // Set turn PID, for external use
-void turn_pid(double itarget, int speed) {
+void odom_turn(double itarget, int speed) {
   // Print targets
-  printf("Odom Turn Started... Target Value: %f ", itarget);
-  printf("\n");
+  printf("Odom Turn Started... Target Value: (%f, %f, %f) \n", target.x, target.y, itarget);
 
   headingPID.set_target(itarget);
-  raw_move_odom({{target.x, target.y, itarget}, HOLD_ANGLE, MAX_XY, speed, FWD});
 
+  // Run raw odom
+  raw_move_odom({{target.x, target.y, itarget}, HOLD_ANGLE, MAX_XY, speed});
+
+  // Run point_to_point()
+  mode = TO_POINT;
+}
+
+// Relative odom
+void relative_move_to_point(double distance, int speed) {
+  // Calculate x,y based on distance (hypot)
+  pose output = vector_off_point(distance, target);
+
+  // Print targets
+  printf("Relative Odom Motion Started... Target Value: (%f, %f, %f) \n", output.x, output.y, output.theta);
+
+  // Run raw odom
+  raw_move_odom({output, HOLD_ANGLE, speed, MAX_A});
+
+  // Run point_to_point()
   mode = TO_POINT;
 }
 

@@ -54,10 +54,21 @@ double distance_to_point(double x_target, double y_target) {
   double x_error = (x_target - current.x);
   double y_error = (y_target - current.y);
 
-  // Hypotenuse of triangle 
+  // Hypotenuse of triangle
   double distance = hypot(x_error, y_error);
 
   return distance;
+}
+
+pose vector_off_point(double added, pose icurrent) {
+  double x_error = sin(to_rad(icurrent.theta)) * added;
+  double y_error = cos(to_rad(icurrent.theta)) * added;
+
+  pose output;
+  output.x = x_error + icurrent.x;
+  output.y = y_error + icurrent.y;
+  output.theta = icurrent.theta;
+  return output;
 }
 
 std::string exit_to_string(exit_output input) {
