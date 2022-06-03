@@ -132,6 +132,15 @@ void injected_pure_pursuit(std::vector<odom> imovements) {
   // Set new targets
   movements = inject_points({imovements});
 
+  /*
+  // Print subpoints
+  printf("Subpoints\n");
+  for (int i = 0; i < movements.size(); i++) {
+    std::string turn = turn_types_to_string(movements[i].turn_type);
+    std::cout << "Point " << i << ": (" << movements[i].target.x << ", " << movements[i].target.y << ", " << movements[i].target.theta << ")  Turn: " << turn << "\n";
+  }
+  */
+
   // Run pure_pursuit()
   mode = PURE_PURSUIT;
 }

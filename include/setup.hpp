@@ -16,9 +16,10 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #define MAX_A 75
 #define TURN_SPEED 90
 
-#define TURN_FAST_MOVE 15.0  // When FAST_MOVE, it will turn when within this of target
-#define LOOK_AHEAD 6.0       // Pure pursuit look ahead distance
-#define SPACING 3.0          // Spacing for pure pursuit injected points
+#define TURN_FAST_MOVE 18.0      // When FAST_MOVE, it will turn when within this of target
+#define STOP_UPDATING_ANGLE 3.0  // When looking at a target, stop updating the angle when target is within this
+#define LOOK_AHEAD 6.0           // Pure pursuit look ahead distance
+#define SPACING 3.0              // Spacing for pure pursuit injected points
 
 /**
  * Ports

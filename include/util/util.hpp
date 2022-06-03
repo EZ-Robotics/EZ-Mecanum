@@ -38,8 +38,9 @@ enum exit_output { RUNNING = 1,
  */
 enum turn_types { FAST_MOVE_FWD = 0,
                   FAST_MOVE_REV = 1,
-                  LOOK_AT_TARGET = 2,
-                  HOLD_ANGLE = 3 };
+                  LOOK_AT_TARGET_FWD = 2,
+                  LOOK_AT_TARGET_REV = 3,
+                  HOLD_ANGLE = 4 };
 
 /**
  * Struct for coordinates

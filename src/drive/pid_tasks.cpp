@@ -64,7 +64,7 @@ void turn_pid_task() {
 
 void point_to_point() {
   // Add for direction
-  int add = current_turn_type == FAST_MOVE_REV ? 180 : 0;
+  int add = current_turn_type == FAST_MOVE_REV || LOOK_AT_TARGET_REV ? 180 : 0;
 
   // Set angle target
   switch (current_turn_type) {
@@ -78,8 +78,9 @@ void point_to_point() {
       }
       break;
     // Looks at target the entire motion
-    case LOOK_AT_TARGET:
-      if (fabs(distance_to_point(target, current)) > 2) {
+    case LOOK_AT_TARGET_FWD:
+    case LOOK_AT_TARGET_REV:
+      if (fabs(distance_to_point(target, current)) > STOP_UPDATING_ANGLE) {
         a_target = absolute_angle_to_point(target, current) + add;
       }
       break;

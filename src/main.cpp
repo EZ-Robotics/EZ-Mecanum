@@ -36,12 +36,19 @@ void autonomous() {
   reset_pid_targets();
   drive_brake(MOTOR_BRAKE_HOLD);
 
-  injected_pure_pursuit({
-      {{0, 24, 90}, FAST_MOVE_FWD},
-      {{24, 24, 180}, FAST_MOVE_FWD},
-      {{24, 0, 270}, FAST_MOVE_FWD},
-      {{0, 0, 0}, FAST_MOVE_FWD},
-  });
+  pure_pursuit(
+      {{{0, 24, 90}, FAST_MOVE_FWD},
+       {{24, 24, 22.5}, FAST_MOVE_FWD},
+       {{0, 0, 0}, FAST_MOVE_REV}});
+  wait_drive();
+
+  pros::delay(1000);
+
+  injected_pure_pursuit(
+      {{{0, 24, 90}, FAST_MOVE_FWD},
+       {{24, 24, 22.5}, FAST_MOVE_FWD},
+       {{0, 0, 0}, FAST_MOVE_REV}});
+  wait_drive();
 }
 
 // Runs the operator control code.
@@ -55,6 +62,6 @@ void opcontrol() {
     indexer_opcontrol();
     intake_opcontrol();
 
-    pros::delay(100);
+    pros::delay(DELAY_TIME);
   }
 }

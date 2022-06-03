@@ -87,8 +87,8 @@ std::vector<odom> inject_points(std::vector<odom> imovements) {
     // Figure out how many points fit in the vector
     int num_of_points_that_fit = (distance_to_point(input[i + 1].target, input[i].target)) / SPACING;
 
-    // Add the parent point
-    output.push_back(input[i]);
+    // Add parent point
+    output.push_back({input[i].target});
     output_index++;
 
     // Add the injected points
@@ -99,8 +99,8 @@ std::vector<odom> inject_points(std::vector<odom> imovements) {
 
       // Make sure the robot is looking at next point
       turn_types turn;
-      if ((input[i + 1].turn_type == FAST_MOVE_REV || input[i + 1].turn_type == FAST_MOVE_FWD) && fabs(distance_to_point(input[i + 1].target, new_point)) > TURN_FAST_MOVE) {
-        turn = LOOK_AT_TARGET;
+      if ((input[i + 1].turn_type == FAST_MOVE_REV || input[i + 1].turn_type == FAST_MOVE_FWD) && fabs(distance_to_point(input[i + 1].target, new_point)) > TURN_FAST_MOVE - LOOK_AHEAD) {
+        turn = input[i + 1].turn_type == FAST_MOVE_REV ? LOOK_AT_TARGET_REV : LOOK_AT_TARGET_FWD;
       } else {
         turn = input[i + 1].turn_type;
       }
@@ -150,8 +150,10 @@ std::string turn_types_to_string(turn_types input) {
       return "Fast Move Rev";
     case FAST_MOVE_FWD:
       return "Fast Move FWD";
-    case LOOK_AT_TARGET:
-      return "Look At Target";
+    case LOOK_AT_TARGET_FWD:
+      return "Look At Target FWD";
+    case LOOK_AT_TARGET_REV:
+      return "Look At Target REV";
     case HOLD_ANGLE:
       return "Hold Angle";
     default:
