@@ -82,36 +82,6 @@ inline bool AUTO_RAN = false;
 double clip_num(double input, double max, double min);
 
 /**
- * Constrains the angle to 180 to -180
- */
-double wrap_angle(double theta);
-
-/**
- * Outputs absolute angle to point
- */
-double absolute_angle_to_point(pose itarget, pose icurrent);
-
-/**
- * Outputs relative angle to point (error)
- */
-double relative_angle_to_point(double angle);
-
-/**
- * Outputs distance to point (hypot)
- */
-double distance_to_point(pose itarget, pose icurrent);
-
-/**
- * Outputs x,y from a pose
- */
-pose vector_off_point(double added, pose icurrent);
-
-/**
- * Injects points in a list
- */
-std::vector<odom> inject_points(std::vector<odom> imovements);
-
-/**
  * Returns 1 if input is positive and -1 if input is negative
  */
 int sgn(double input);
@@ -127,4 +97,3 @@ double to_deg(double input);
 double to_rad(double input);
 
 void print_path_for_python(std::vector<odom> imovements);
-std::vector<odom> smooth_path(std::vector<odom> ipath, double weight_smooth, double weight_data, double tolerance);

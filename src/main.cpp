@@ -41,8 +41,8 @@ void autonomous() {
 
   smooth_pure_pursuit(
       {{{-6, 24, 50}, LOOK_AT_TARGET_FWD},
-       {{36, 24, 50}, HOLD_ANGLE, 60},
-       {{36, 18, 50}, HOLD_ANGLE},
+       {{36, 36, 50}, HOLD_ANGLE, 60},
+       {{36, 30, 50}, HOLD_ANGLE},
        {{0, 0, 0}, FAST_MOVE_REV}},
       0.1, 0.005, 0.0001);
 

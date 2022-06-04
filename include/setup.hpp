@@ -68,7 +68,7 @@ inline const int TICK_PER_REV = 8096;
 inline const double WHEEL_DIA = 2.0;
 
 // Tracking wheel offsets
-inline double WIDTH = 6.86;  // biger means angle will grow
+inline const double WIDTH = 6.88;  // biger means angle will grow
 inline const double CENTER_OFFSET = -2.0;
 
 // ignore these unless the left/right tracker aren't mounted symetrically
