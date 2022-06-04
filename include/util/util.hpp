@@ -125,3 +125,5 @@ double to_deg(double input);
  * Convert degrees to radians
  */
 double to_rad(double input);
+
+void print_path_for_python(std::vector<odom> imovements);

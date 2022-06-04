@@ -108,7 +108,13 @@ void pure_pursuit(std::vector<odom> imovements) {
 
   // Reset indexes and previous movements
   movements.clear();
+  injected_pp_index.clear();
   pp_index = 0;
+
+  // This is used for pp_wait_until()
+  for (int i = 0; i < imovements.size(); i++) {
+    injected_pp_index.push_back(i);
+  }
 
   // Set new targets
   movements = imovements;
@@ -127,6 +133,7 @@ void injected_pure_pursuit(std::vector<odom> imovements) {
 
   // Reset indexes and previous movements
   movements.clear();
+  injected_pp_index.clear();
   pp_index = 0;
 
   // Set new targets

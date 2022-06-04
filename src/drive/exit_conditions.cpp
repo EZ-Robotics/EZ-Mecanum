@@ -63,3 +63,12 @@ void wait_drive() {
     // }
   }
 }
+
+void pp_wait_until(int index) {
+  // Let the PID run at least 1 iteration
+  pros::delay(DELAY_TIME);
+
+  while (pp_index < injected_pp_index[index - 1]) {
+    pros::delay(DELAY_TIME);
+  }
+}

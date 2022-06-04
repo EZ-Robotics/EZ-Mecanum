@@ -75,6 +75,7 @@ pose vector_off_point(double added, pose icurrent) {
 
 // Inject point based on https://www.chiefdelphi.com/t/paper-implementation-of-the-adaptive-pure-pursuit-controller/166552
 std::vector<odom> inject_points(std::vector<odom> imovements) {
+  injected_pp_index.clear();
   // Create new vector that includes the starting point
   std::vector<odom> input = imovements;
   input.insert(input.begin(), {{{target.x, target.x, imovements[0].target.theta}, imovements[0].turn_type, imovements[0].max_xy_speed, imovements[0].max_turn_speed}});
@@ -90,6 +91,7 @@ std::vector<odom> inject_points(std::vector<odom> imovements) {
     // Add parent point
     output.push_back({input[i].target});
     output_index++;
+    injected_pp_index.push_back(output_index);
 
     // Add the injected points
     for (int j = 0; j < num_of_points_that_fit; j++) {
@@ -161,4 +163,12 @@ std::string turn_types_to_string(turn_types input) {
   }
 
   return "Error: Out of bounds!";
+}
+void print_path_for_python(std::vector<odom> imovements) {
+  // Print subpoints
+  printf("[");
+  for (int i = 0; i < imovements.size(); i++) {
+    printf(",[%f, %f]\n", imovements[i].target.x, imovements[i].target.y);
+  }
+  printf("]");
 }

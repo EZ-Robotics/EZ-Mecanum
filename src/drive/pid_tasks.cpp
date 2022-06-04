@@ -64,13 +64,14 @@ void turn_pid_task() {
 
 void point_to_point() {
   // Add for direction
-  int add = current_turn_type == FAST_MOVE_REV || LOOK_AT_TARGET_REV ? 180 : 0;
+  int add = current_turn_type == FAST_MOVE_REV || current_turn_type == LOOK_AT_TARGET_REV ? 180 : 0;
 
   // Set angle target
   switch (current_turn_type) {
     // Looks at target until final distance then goes to final angle
     case FAST_MOVE_FWD:
     case FAST_MOVE_REV:
+      // if (fabs(distance_to_point(target, current)) < clip_num(relative_angle * (TURN_FAST_MOVE / 90.0), 9.0, -9.0)) {
       if (fabs(distance_to_point(target, current)) < TURN_FAST_MOVE) {
         a_target = target.theta;
       } else {
@@ -101,7 +102,7 @@ void point_to_point() {
 
   // Vector math
   double angle = to_rad(get_angle());
-  double x_raw_output = (xPID.output * cos(angle)) - (yPID.output * sin(angle));
+  double x_raw_output = (xPID.output * cos(angle)) - (yPID.output * sin(angle)) * VECTOR_SCALING;
   double y_raw_output = (yPID.output * cos(angle)) + (xPID.output * sin(angle));
   double a_raw_output = aPID.output;
 

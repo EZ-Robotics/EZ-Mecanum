@@ -15,11 +15,12 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #define MAX_XY 110
 #define MAX_A 75
 #define TURN_SPEED 90
+#define VECTOR_SCALING 1.64893  // max y velocity / max x velocity, this gets multipled to the raw x power bceause thats the slower side
 
-#define TURN_FAST_MOVE 18.0      // When FAST_MOVE, it will turn when within this of target
+#define TURN_FAST_MOVE 18.0      // When FAST_MOVE, robot will start to turn when distance is within this
 #define STOP_UPDATING_ANGLE 3.0  // When looking at a target, stop updating the angle when target is within this
 #define LOOK_AHEAD 6.0           // Pure pursuit look ahead distance
-#define SPACING 3.0              // Spacing for pure pursuit injected points
+#define SPACING 1.0              // Spacing for pure pursuit injected points
 
 /**
  * Ports

@@ -13,6 +13,7 @@ inline int pp_index = 0;
 inline int max_xy = MAX_XY;
 inline int max_a = MAX_A;
 inline turn_types current_turn_type = HOLD_ANGLE;
+inline std::vector<int> injected_pp_index;
 inline std::vector<odom> movements;
 
 inline PID headingPID(1);
