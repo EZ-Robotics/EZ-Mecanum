@@ -103,7 +103,9 @@ void pure_pursuit(std::vector<odom> imovements) {
   // Print targets
   printf("Pure Pursuit Motion Started... Target Coordinates: \n");
   for (int i = 0; i < imovements.size(); i++) {
-    printf(" Point %i: (%f, %f, %f)\n", i + 1, imovements[i].target.x, imovements[i].target.y, imovements[i].target.theta);
+    std::string turn = turn_types_to_string(imovements[i].turn_type);
+    std::cout << "Point " << i << ": (" << imovements[i].target.x << ", " << imovements[i].target.y << ", " << imovements[i].target.theta << ")  Turn: " << turn << "\n";
+
   }
 
   // Reset indexes and previous movements
@@ -128,7 +130,9 @@ void injected_pure_pursuit(std::vector<odom> imovements) {
   // Print targets
   printf("Point Injected Pure Pursuit Motion Started... Target Coordinates: \n");
   for (int i = 0; i < imovements.size(); i++) {
-    printf(" Point %i: (%f, %f, %f)\n", i + 1, imovements[i].target.x, imovements[i].target.y, imovements[i].target.theta);
+    std::string turn = turn_types_to_string(imovements[i].turn_type);
+    std::cout << "Point " << i << ": (" << imovements[i].target.x << ", " << imovements[i].target.y << ", " << imovements[i].target.theta << ")  Turn: " << turn << "\n";
+
   }
 
   // Reset indexes and previous movements
@@ -138,6 +142,37 @@ void injected_pure_pursuit(std::vector<odom> imovements) {
 
   // Set new targets
   movements = inject_points({imovements});
+
+  /*
+  // Print subpoints
+  printf("Subpoints\n");
+  for (int i = 0; i < movements.size(); i++) {
+    std::string turn = turn_types_to_string(movements[i].turn_type);
+    std::cout << "Point " << i << ": (" << movements[i].target.x << ", " << movements[i].target.y << ", " << movements[i].target.theta << ")  Turn: " << turn << "\n";
+  }
+  */
+
+  // Run pure_pursuit()
+  mode = PURE_PURSUIT;
+}
+
+// Pure pursuit, for external use
+void smooth_pure_pursuit(std::vector<odom> imovements, double weight_smooth, double weight_data, double tolerance) {
+  // Print targets
+  printf("Point Injected Pure Pursuit Motion Started... Target Coordinates: \n");
+  for (int i = 0; i < imovements.size(); i++) {
+    std::string turn = turn_types_to_string(imovements[i].turn_type);
+    std::cout << "Point " << i << ": (" << imovements[i].target.x << ", " << imovements[i].target.y << ", " << imovements[i].target.theta << ")  Turn: " << turn << "\n";
+
+  }
+
+  // Reset indexes and previous movements
+  movements.clear();
+  injected_pp_index.clear();
+  pp_index = 0;
+
+  // Set new targets
+  movements = smooth_path(inject_points({imovements}), weight_smooth, weight_data, tolerance);
 
   /*
   // Print subpoints

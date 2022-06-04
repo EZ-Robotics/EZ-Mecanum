@@ -127,3 +127,4 @@ double to_deg(double input);
 double to_rad(double input);
 
 void print_path_for_python(std::vector<odom> imovements);
+std::vector<odom> smooth_path(std::vector<odom> ipath, double weight_smooth, double weight_data, double tolerance);

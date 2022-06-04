@@ -36,3 +36,4 @@ void relative_move_to_point(double distance, int speed = MAX_XY);
 void move_to_point(odom imovement);
 void pure_pursuit(std::vector<odom> imovements);
 void injected_pure_pursuit(std::vector<odom> imovements);
+void smooth_pure_pursuit(std::vector<odom> imovements, double weight_smooth = 0.3, double weight_data = 0.005, double tolerance = 0.0001);

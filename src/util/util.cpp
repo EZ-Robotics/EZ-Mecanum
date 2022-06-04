@@ -123,6 +123,47 @@ std::vector<odom> inject_points(std::vector<odom> imovements) {
   return output;
 }
 
+std::vector<odom> smooth_path(std::vector<odom> ipath, double weight_smooth, double weight_data, double tolerance) {
+  double path[500][2];
+  double new_path[500][2];
+
+  // Convert odom to array
+  for (int i = 0; i < ipath.size(); i++) {
+    path[i][0] = new_path[i][0] = ipath[i].target.x;
+    path[i][1] = new_path[i][1] = ipath[i].target.y;
+  }
+
+  double change = tolerance;
+
+  while (change >= tolerance) {
+    change = 0.0;
+    for (int i = 1; i < ipath.size() - 2; i++) {
+      for (int j = 0; j < 2; j++) {
+        double x_i = path[i][j];
+        double y_i = new_path[i][j];
+        double y_prev = new_path[i - 1][j];
+        double y_next = new_path[i + 1][j];
+
+        double y_i_saved = y_i;
+        y_i += weight_data * (x_i - y_i) + weight_smooth * (y_next + y_prev - (2.0 * y_i));
+        new_path[i][j] = y_i;
+
+        change += abs(y_i - y_i_saved);
+      }
+    }
+  }
+
+  // Convert array to odom
+  std::vector<odom> output = ipath;  // Set output to input so target angles, turn types and speed hold
+  // Overwrite x and y
+  for (int i = 0; i < ipath.size(); i++) {
+    output[i].target.x = new_path[i][0];
+    output[i].target.y = new_path[i][1];
+  }
+
+  return output;
+}
+
 // Print exit conditions
 std::string exit_to_string(exit_output input) {
   switch ((int)input) {
@@ -149,15 +190,15 @@ std::string exit_to_string(exit_output input) {
 std::string turn_types_to_string(turn_types input) {
   switch ((int)input) {
     case FAST_MOVE_REV:
-      return "Fast Move Rev";
+      return "FAST_MOVE_REV";
     case FAST_MOVE_FWD:
-      return "Fast Move FWD";
+      return "FAST_MOVE_FWD";
     case LOOK_AT_TARGET_FWD:
-      return "Look At Target FWD";
+      return "LOOK_AT_TARGET_FWD";
     case LOOK_AT_TARGET_REV:
-      return "Look At Target REV";
+      return "LOOK_AT_TARGET_REV";
     case HOLD_ANGLE:
-      return "Hold Angle";
+      return "HOLD_ANGLE";
     default:
       return "Error: Out of bounds!";
   }
@@ -165,10 +206,14 @@ std::string turn_types_to_string(turn_types input) {
   return "Error: Out of bounds!";
 }
 void print_path_for_python(std::vector<odom> imovements) {
+  bool first = true;
   // Print subpoints
-  printf("[");
+  std::cout << "raw_path = [";
   for (int i = 0; i < imovements.size(); i++) {
-    printf(",[%f, %f]\n", imovements[i].target.x, imovements[i].target.y);
+    if (!first) std::cout << "   ,";
+
+    std::cout << "[" << imovements[i].target.x << ", " << imovements[i].target.y << ", " << imovements[i].target.theta << ", \"" << turn_types_to_string(imovements[i].turn_type) << "\", " << imovements[i].max_xy_speed << ", " << imovements[i].max_turn_speed << "] \n";
+    first = false;
   }
-  printf("]");
+  std::cout << "]\n";
 }
