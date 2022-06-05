@@ -142,3 +142,15 @@ void wait_until_pp() {
 
   wait_drive();
 }
+
+void smooth_pp_testing() {
+  smooth_pure_pursuit(
+      {{{0, 24, 0}, LOOK_AT_TARGET_FWD},
+       {{-12, 48, 0}, LOOK_AT_TARGET_FWD},
+       {{0, 72, 0}, LOOK_AT_TARGET_FWD},
+       {{12, 84, 0}, LOOK_AT_TARGET_FWD},
+       {{36, 84, 0}, LOOK_AT_TARGET_FWD},
+       {{48, 72, 0}, LOOK_AT_TARGET_FWD},
+       {{0, 0, 90}, FAST_MOVE_FWD}});
+  wait_drive();
+}

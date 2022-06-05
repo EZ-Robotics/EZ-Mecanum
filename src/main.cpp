@@ -6,7 +6,9 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "main.h"
 
+#include "autons.hpp"
 #include "drive/tracking.hpp"
+#include "util/util.hpp"
 
 // This occurs as soon as the program starts.
 void initialize() {
@@ -24,6 +26,7 @@ void initialize() {
   set_pid_defaults();
 
   ez::as::auton_selector.add_autons({
+      Auton("Full Field Test Path\n\nSmooth PP testing", smooth_pp_testing),
       Auton("Normal PID Example\n\nNormal drive PID", normal_pid_example),
       Auton("Odom Normal PID\n\n'Normal' PID but it's actually odom", odom_normal_example),
       Auton("Move to Point Hold Angle\n\nDrive diagonally and hold an angle", odom_hold_angle_example),
@@ -51,15 +54,19 @@ void autonomous() {
   drive_brake(MOTOR_BRAKE_HOLD);
   trackingTask.resume();
 
-  ez::as::auton_selector.call_selected_auton();
+  // ez::as::auton_selector.call_selected_auton();
+  smooth_pure_pursuit(
+      {{{0, 24, 0}, LOOK_AT_TARGET_FWD},
+       {{24, 24, 0}, LOOK_AT_TARGET_FWD},
+       {{24, 48, 0}, FAST_MOVE_FWD}});
 
   /*
   smooth_pure_pursuit(
       {{{-6, 24, 50}, LOOK_AT_TARGET_FWD},
-       {{36, 36, 50}, HOLD_ANGLE, 60},
+       {{36, 36, 50}, HOLD_ANGLE},
        {{36, 30, 50}, HOLD_ANGLE},
        {{0, 0, 0}, FAST_MOVE_REV}},
-      0.1, 0.005, 0.0001);
+      KINDA_SMOOTH);
 
   pp_wait_until(2);
   set_intake(127);

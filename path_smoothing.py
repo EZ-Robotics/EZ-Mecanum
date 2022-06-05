@@ -1,6 +1,7 @@
 #this doesnt work rn
 
 import math
+import mathlibplot
 
 # reference value 0.1, 0.3, 0.00001
 def smoothing(path, weight_data, weight_smooth, tolerance):

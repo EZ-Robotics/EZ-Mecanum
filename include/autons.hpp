@@ -15,3 +15,5 @@ void pp_example();
 void injected_pp_example();
 void smooth_pp_example();
 void wait_until_pp();
+
+void smooth_pp_testing();
