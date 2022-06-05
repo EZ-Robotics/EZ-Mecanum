@@ -10,13 +10,13 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "util/util.hpp"
 
 void reset_pid_targets() {
-  headingPID.set_target(0);
-  leftPID.set_target(0);
-  rightPID.set_target(0);
+  headingPID.reset_variables();
+  leftPID.reset_variables();
+  rightPID.reset_variables();
 
-  xPID.set_target(0);
-  yPID.set_target(0);
-  aPID.set_target(0);
+  xPID.reset_variables();
+  yPID.reset_variables();
+  aPID.reset_variables();
 }
 
 void drive_pid(double target, int speed) {
@@ -49,6 +49,7 @@ void imu_pid(double itarget, int speed) {
 
 // For internal use
 void raw_move_odom(odom imovement) {
+  headingPID.set_target(imovement.target.theta);
   current_turn_type = imovement.turn_type;
   target = imovement.target;
   max_xy = abs(imovement.max_xy_speed);
@@ -105,7 +106,6 @@ void pure_pursuit(std::vector<odom> imovements) {
   for (int i = 0; i < imovements.size(); i++) {
     std::string turn = turn_types_to_string(imovements[i].turn_type);
     std::cout << "Point " << i << ": (" << imovements[i].target.x << ", " << imovements[i].target.y << ", " << imovements[i].target.theta << ")  Turn: " << turn << "\n";
-
   }
 
   // Reset indexes and previous movements
@@ -132,7 +132,6 @@ void injected_pure_pursuit(std::vector<odom> imovements) {
   for (int i = 0; i < imovements.size(); i++) {
     std::string turn = turn_types_to_string(imovements[i].turn_type);
     std::cout << "Point " << i << ": (" << imovements[i].target.x << ", " << imovements[i].target.y << ", " << imovements[i].target.theta << ")  Turn: " << turn << "\n";
-
   }
 
   // Reset indexes and previous movements
@@ -163,7 +162,6 @@ void smooth_pure_pursuit(std::vector<odom> imovements, double weight_smooth, dou
   for (int i = 0; i < imovements.size(); i++) {
     std::string turn = turn_types_to_string(imovements[i].turn_type);
     std::cout << "Point " << i << ": (" << imovements[i].target.x << ", " << imovements[i].target.y << ", " << imovements[i].target.theta << ")  Turn: " << turn << "\n";
-
   }
 
   // Reset indexes and previous movements

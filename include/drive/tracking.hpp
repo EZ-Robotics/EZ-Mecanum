@@ -4,7 +4,7 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-#pragma once 
+#pragma once
 
 #include "util/util.hpp"
 
@@ -17,3 +17,6 @@ void set_pose(pose itarget);
 inline pose target;
 inline pose current;
 inline double angle_rad;
+
+void tracking_task();
+inline pros::Task trackingTask(tracking_task);

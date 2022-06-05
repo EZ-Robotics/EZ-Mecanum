@@ -6,9 +6,13 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "main.h"
 
+#include "drive/tracking.hpp"
+
 // This occurs as soon as the program starts.
 void initialize() {
   pros::delay(300);
+
+  trackingTask.suspend();
 
   imu.reset();
   pros::delay(2000);
@@ -34,10 +38,10 @@ void initialize() {
 }
 
 // Runs while the robot is in disabled at on a competition.
-void disabled() {}
+void disabled() { trackingTask.suspend(); }
 
 // Runs after initialize(), and before autonomous when connected to a competition.
-void competition_initialize() {}
+void competition_initialize() { trackingTask.suspend(); }
 
 // Runs the user autonomous code.
 void autonomous() {
@@ -45,6 +49,7 @@ void autonomous() {
   reset_odom();
   reset_pid_targets();
   drive_brake(MOTOR_BRAKE_HOLD);
+  trackingTask.resume();
 
   ez::as::auton_selector.call_selected_auton();
 
@@ -69,6 +74,8 @@ void autonomous() {
 void opcontrol() {
   // Drive brake, this is preference
   drive_brake(MOTOR_BRAKE_HOLD);
+
+  trackingTask.resume();
 
   while (true) {
     flywheel_opcontrol();

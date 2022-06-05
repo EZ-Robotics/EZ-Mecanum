@@ -125,6 +125,8 @@ void point_to_point() {
     }
   }
 
+  printf("a: %f  x: %f  y: %f      x(%f, %f)\n", aPID.target, xPID.error, yPID.error, target.x, current.x);
+
   // Set motors
   raw_set_drive(x_output, y_output, a_output);
 }
