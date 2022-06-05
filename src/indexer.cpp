@@ -12,8 +12,10 @@ int amount_of_fires = 0;
 void set_indexer_piston(bool input) { indexerPiston.set_value(input); }
 
 void fire_indexer(int fire_amount) {
-  if (!indexer_on) indexer_on = true;
-  amount_of_fires = fire_amount;
+  if (!indexer_on) {
+    indexer_on = true;
+    amount_of_fires = fire_amount;
+  }
 }
 
 void indexer_control() {
