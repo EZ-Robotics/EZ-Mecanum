@@ -21,6 +21,7 @@ void drive_brake(pros::motor_brake_mode_e_t input);
 int deadzone(int input);
 
 void joystick_control();
+void lucas_joystick_control();
 
 void set_left(int input);
 void set_right(int input);

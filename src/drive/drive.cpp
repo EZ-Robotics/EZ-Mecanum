@@ -44,9 +44,27 @@ void raw_set_drive(int x, int y, int a) {
   r2_back = br;
 }
 
+// For internal use only
+void lucas_set_drive(int x, int y, int a) {
+  mode = DISABLED;
+
+  int fl = x + y + a;
+  int bl = -x + y + a;
+  int fr = -x + y - a;
+  int br = x + y - a;
+
+  l1_front = br;
+  l2_front = br;
+  l1_back = fr;
+  l2_back = fr;
+  r1_front = bl;
+  r2_front = bl;
+  r1_back = fl;
+  r2_back = fl;
+}
+
 // For external use only
 void set_drive(int x, int y, int a) {
-  mode = DISABLED;
   raw_set_drive(x, y, a);
 }
 
@@ -97,4 +115,13 @@ void joystick_control() {
   int a = inputcurve(master.get_analog(ANALOG_RIGHT_X));
 
   set_drive(x, y, a);
+}
+
+// Opcontrol
+void lucas_joystick_control() {
+  int y = master.get_analog(ANALOG_LEFT_Y);
+  int x = master.get_analog(ANALOG_LEFT_X);
+  int a = inputcurve(master.get_analog(ANALOG_RIGHT_X));
+
+  lucas_set_drive(-x, -y, -a);
 }

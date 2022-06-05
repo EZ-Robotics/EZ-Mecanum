@@ -6,34 +6,43 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "main.h"
 
-void set_indexer(bool input) { indexerPiston.set_value(input); }
+bool indexer_on = false;
+int amount_of_fires = 0;
+
+void set_indexer_piston(bool input) { indexerPiston.set_value(input); }
+
+void fire_indexer(int fire_amount) {
+  if (!indexer_on) indexer_on = true;
+  amount_of_fires = fire_amount;
+}
 
 void indexer_control() {
   const int active_time = 500;  // keep in multiples of 10 ms
-  int timer = -1;
-
-  while (1) {
-    if (indexer_state == 1) {
-      indexer_state = 2;
-      timer = active_time;
+  const int deactive_time = 250;
+  int timer = 0;
+  while (true) {
+    // When the timer has reached, disable piston and don't let the piston reengage for another 250ms
+    if (indexer_on && timer >= active_time) {
+      set_indexer_piston(false);
+      if (timer >= active_time + deactive_time) {
+        amount_of_fires--;
+        if (amount_of_fires == 0) indexer_on = false;
+        timer = 0;
+      }
+      timer += DELAY_TIME;
     }
-
-    while (timer >= 0) {
-      timer -= DELAY_TIME;
-      set_indexer(true);
-      pros::delay(DELAY_TIME);
+    // When initially turns on, trigger piston
+    else if (indexer_on) {
+      set_indexer_piston(true);
+      timer += DELAY_TIME;
     }
-
-    if (indexer_state == 2) indexer_state = 0;
-    set_indexer(false);
-
     pros::delay(DELAY_TIME);
   }
 }
 pros::Task indexerControl(indexer_control);
 
 void indexer_opcontrol() {
-  if (master.get_digital_new_press(B_INDEXER) && (indexer_state == 0)) {
-    indexer_state = 1;
+  if (master.get_digital(B_INDEXER)) {
+    fire_indexer();
   }
 }

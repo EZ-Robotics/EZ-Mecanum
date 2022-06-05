@@ -80,6 +80,7 @@ void opcontrol() {
   while (true) {
     flywheel_opcontrol();
     joystick_control();
+    // lucas_joystick_control();
     indexer_opcontrol();
     intake_opcontrol();
 
