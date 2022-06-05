@@ -12,7 +12,7 @@ void set_x(double x);
 void set_y(double y);
 void set_theta(double a);
 void reset_odom();
-void set_pose(pose target);
+void set_pose(pose itarget);
 
 inline pose target;
 inline pose current;

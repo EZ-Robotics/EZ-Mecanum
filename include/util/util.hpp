@@ -5,6 +5,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #pragma once
+#include <bits/stdc++.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "api.h"
@@ -97,3 +99,19 @@ double to_deg(double input);
 double to_rad(double input);
 
 void print_path_for_python(std::vector<odom> imovements);
+
+/**
+ * Prints to the brain screen in one string.  Splits input between lines with
+ * '\n' or when text longer then 32 characters.
+ *
+ * @param text
+ *        Input string.  Use '\n' for a new line
+ * @param line
+ *        Starting line to print on, defaults to 0
+ */
+void print_to_screen(std::string text, int line = 0);
+
+/**
+ * Is the SD card plugged in?
+ */
+const bool IS_SD_CARD = pros::usd::is_installed();

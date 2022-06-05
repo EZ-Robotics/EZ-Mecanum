@@ -11,10 +11,10 @@ void set_y(double y) { current.y = y; }
 void set_theta(double a) { set_angle(a); }
 void reset_odom() { set_pose({0, 0, 0}); }
 
-void set_pose(pose target) {
-  set_theta(target.theta);
-  set_x(target.x);
-  set_y(target.y);
+void set_pose(pose itarget) {
+  set_theta(itarget.theta);
+  set_x(itarget.x);
+  set_y(itarget.y);
 }
 
 void tracking_task() {

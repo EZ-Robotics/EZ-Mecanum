@@ -4,8 +4,9 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-#include "main.h"
 #include <string.h>
+
+#include "main.h"
 
 bool AUTON_RAN = true;
 
@@ -23,6 +24,81 @@ int sgn(double input) {
   else if (input < 0)
     return -1;
   return 0;
+}
+
+std::string get_last_word(std::string text) {
+  std::string word = "";
+  for (int i = text.length() - 1; i >= 0; i--) {
+    if (text[i] != ' ') {
+      word += text[i];
+    } else {
+      std::reverse(word.begin(), word.end());
+      return word;
+    }
+  }
+  std::reverse(word.begin(), word.end());
+  return word;
+}
+std::string get_rest_of_the_word(std::string text, int position) {
+  std::string word = "";
+  for (int i = position; i < text.length(); i++) {
+    if (text[i] != ' ' && text[i] != '\n') {
+      word += text[i];
+    } else {
+      return word;
+    }
+  }
+  return word;
+}
+// All iance\n\nWE WIN THESE!!!!!
+void print_to_screen(std::string text, int line) {
+  int CurrAutoLine = line;
+  std::vector<string> texts = {};
+  std::string temp = "";
+
+  for (int i = 0; i < text.length(); i++) {
+    if (text[i] != '\n' && temp.length() + 1 > 32) {
+      auto last_word = get_last_word(temp);
+      if (last_word == temp) {
+        texts.push_back(temp);
+        temp = text[i];
+      } else {
+        int size = last_word.length();
+
+        auto rest_of_word = get_rest_of_the_word(text, i);
+        temp.erase(temp.length() - size, size);
+        texts.push_back(temp);
+        last_word += rest_of_word;
+        i += rest_of_word.length();
+        temp = last_word;
+        if (i >= text.length() - 1) {
+          texts.push_back(temp);
+          break;
+        }
+      }
+    }
+    if (i >= text.length() - 1) {
+      temp += text[i];
+      texts.push_back(temp);
+      temp = "";
+      break;
+    } else if (text[i] == '\n') {
+      texts.push_back(temp);
+      temp = "";
+    } else {
+      temp += text[i];
+    }
+  }
+  for (auto i : texts) {
+    if (CurrAutoLine > 7) {
+      pros::lcd::clear();
+      pros::lcd::set_text(line, "Out of Bounds. Print Line is too far down");
+      return;
+    }
+    pros::lcd::clear_line(CurrAutoLine);
+    pros::lcd::set_text(CurrAutoLine, i);
+    CurrAutoLine++;
+  }
 }
 
 // Print exit conditions

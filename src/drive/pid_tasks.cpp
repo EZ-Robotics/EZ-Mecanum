@@ -53,7 +53,7 @@ void drive_pid_task() {
 void turn_pid_task() {
   // Comute turn PID and find shortest path to angle
   //aPID.compute(imu.get_rotation());
-  aPID.compute(get_angle());
+  aPID.compute(imu.get_rotation());
 
   // Clip outpout power
   int turn_out = clip_num(aPID.output, max_a, -max_a);

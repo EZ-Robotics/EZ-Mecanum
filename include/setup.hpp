@@ -78,7 +78,6 @@ inline const double LEFT_OFFSET = WIDTH / 2.0;
 /**
  * Controls
  */
-
 #define B_INDEXER pros::E_CONTROLLER_DIGITAL_DOWN
 #define B_INTAKE_IN pros::E_CONTROLLER_DIGITAL_L1
 #define B_INTAKE_OUT pros::E_CONTROLLER_DIGITAL_L2

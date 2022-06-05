@@ -7,7 +7,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "main.h"
 
 void set_flywheel(int input) { flywheel = input; }
-
 double getRPM() { return flywheel.get_actual_velocity() * 5; }
 
 void flywheel_control() {
@@ -23,37 +22,24 @@ void flywheel_control() {
     double output = 0;
 
     // Coast down
-    if (targetRPM == 0) {
-      pros::lcd::set_text(2, "Flywheel off!         ");
+    if (targetRPM == 0)
       output = 0;
-    }
 
     // Running too slow (< target - deadband), apply full power
-    else if (rpmError > deadband) {
-      pros::lcd::set_text(2, "Flywheel Too Slow!      ");
+    else if (rpmError > deadband)
       output = maxVoltage;
-    }
 
     // Running too fast (> target + deadband), apply half of hold power
-    else if (rpmError < -deadband) {
-      pros::lcd::set_text(2, "Flywheel Too Fast!      ");
+    else if (rpmError < -deadband)
       output = holdPower * 0.5;
-    }
 
     // Running within deadband, switch to hold power + p contorl
-    else {
+    else
       output = holdPower + kP * rpmError;
-      pros::lcd::set_text(2, "At Velocity!          ");
-    }
 
     flywheel.move_voltage(output);
 
-    std::string str_rpm = std::to_string(targetRPM);
-    std::string str_cur = std::to_string((int)getRPM());
-    pros::lcd::set_text(0, "Target Vel: " + str_rpm);
-    pros::lcd::set_text(1, "Current Vel: " + str_cur);
-
-    pros::delay(10);
+    pros::delay(DELAY_TIME);
   }
 }
 pros::Task flywheelControl(flywheel_control);

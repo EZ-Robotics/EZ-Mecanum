@@ -45,15 +45,19 @@
 
 #include "setup.hpp"
 
+#include "util/util.hpp"
+#include "util/pid.hpp"
+
 #include "drive/tracking.hpp"
 #include "drive/drive.hpp"
 #include "drive/set_pid.hpp"
 #include "drive/pid_tasks.hpp"
 #include "drive/exit_conditions.hpp"
-#include "drive/pp_math.hpp"
+#include "drive/purepursuit_math.hpp"
 
-#include "util/util.hpp"
-#include "util/pid.hpp"
+#include "auton_selector/selector.hpp"
+#include "auton_selector/auton.hpp"
+#include "auton_selector/sdcard.hpp"
 
 #include "flywheel.hpp"
 #include "indexer.hpp"
