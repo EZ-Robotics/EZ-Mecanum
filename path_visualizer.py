@@ -1,5 +1,3 @@
-#this code is 100% sarahs from team ICTRL and 97963A
-
 import numpy as np
 import matplotlib.pyplot as plt
 import math

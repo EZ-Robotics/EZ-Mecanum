@@ -149,7 +149,9 @@ void print_path_for_python(std::vector<odom> imovements) {
   for (int i = 0; i < imovements.size(); i++) {
     if (!first) std::cout << "   ,";
 
-    std::cout << "[" << imovements[i].target.x << ", " << imovements[i].target.y << ", " << imovements[i].target.theta << ", \"" << turn_types_to_string(imovements[i].turn_type) << "\", " << imovements[i].max_xy_speed << ", " << imovements[i].max_turn_speed << "] \n";
+    // std::cout << "[" << imovements[i].target.x << ", " << imovements[i].target.y << ", " << imovements[i].target.theta << ", \"" << turn_types_to_string(imovements[i].turn_type) << "\", " << imovements[i].max_xy_speed << ", " << imovements[i].max_turn_speed << "] \n";
+    std::cout << "[" << imovements[i].target.x / 12.0 << ", " << imovements[i].target.y / 12.0 << "] \n";
+
     first = false;
   }
   std::cout << "]\n";
