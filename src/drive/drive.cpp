@@ -110,18 +110,18 @@ double inputcurve(int x) {
 
 // Opcontrol
 void joystick_control() {
-  int y = master.get_analog(ANALOG_LEFT_Y);
-  int x = master.get_analog(ANALOG_LEFT_X);
-  int a = inputcurve(master.get_analog(ANALOG_RIGHT_X));
+  int y = deadzone(master.get_analog(ANALOG_LEFT_Y));
+  int x = deadzone(master.get_analog(ANALOG_LEFT_X));
+  int a = inputcurve(deadzone(master.get_analog(ANALOG_RIGHT_X)));
 
   set_drive(x, y, a);
 }
 
 // Opcontrol
 void lucas_joystick_control() {
-  int y = master.get_analog(ANALOG_LEFT_Y);
-  int x = master.get_analog(ANALOG_LEFT_X);
-  int a = inputcurve(master.get_analog(ANALOG_RIGHT_X));
+  int y = deadzone(master.get_analog(ANALOG_LEFT_Y));
+  int x = deadzone(master.get_analog(ANALOG_LEFT_X));
+  int a = inputcurve(deadzone(master.get_analog(ANALOG_RIGHT_X)));
 
   lucas_set_drive(-x, -y, -a);
 }

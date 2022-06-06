@@ -6,6 +6,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #pragma once
 
+inline bool indexer_on = false;
+
 void set_indexer_piston(bool input);
 void fire_indexer(int fire_amount = 1);
 void indexer_opcontrol();

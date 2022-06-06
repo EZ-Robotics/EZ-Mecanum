@@ -7,6 +7,9 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "main.h"
 
 #include "autons.hpp"
+#include "drive/exit_conditions.hpp"
+#include "drive/purepursuit_math.hpp"
+#include "drive/set_pid.hpp"
 #include "drive/tracking.hpp"
 #include "util/util.hpp"
 
@@ -36,6 +39,15 @@ void initialize() {
       Auton("Smooth Pp Square\n\nPure Pursuit through a square, \nbut smooth.", smooth_pp_example),
       Auton("Smooth Pp Square Wait Until\n\nPure Pursuit through a square,\nbut smooth,\nbut run the intake.", wait_until_pp),
   });
+  /*
+    std::vector<odom> path =
+        smooth_path(inject_points(
+                        {{{15, 10, 45}, HOLD_ANGLE, 40},
+                         {{26, 21, 45}, HOLD_ANGLE, 20},
+                         {{30, 25, 45}, HOLD_ANGLE, 20}}),
+                    0.3, 0.005, 0.0001);
+    print_path_for_python(path);
+    */
 
   ez::as::initialize();
 }
@@ -54,11 +66,55 @@ void autonomous() {
   drive_brake(MOTOR_BRAKE_HOLD);
   trackingTask.resume();
 
+  targetRPM = 3000;
+
+  smooth_pure_pursuit(
+      {{{15, 9, 45}, HOLD_ANGLE},
+       {{20, 8, 45}, HOLD_ANGLE, 40},
+       {{25, 13, 45}, HOLD_ANGLE, 20},
+       {{40, 28, 45}, HOLD_ANGLE, 20},
+       {{36, 12, 157}, HOLD_ANGLE}});
+
+  set_intake(127);
+
+  wait_drive();
+
+  while (getRPM() <= targetRPM || indexer_on) pros::delay(10);
+  fire_indexer();
+  while (getRPM() <= targetRPM || indexer_on) pros::delay(10);
+  fire_indexer();
+  while (getRPM() <= targetRPM || indexer_on) pros::delay(10);
+  fire_indexer();
+
+  /*
+  set_intake(-127);
+  wait_drive();
+  set_intake(127);
+  pros::delay(500);
+  */
+
+  /*
+  smooth_pure_pursuit(
+      {{{18, 12, 90}, HOLD_ANGLE},
+       {{36, 12, 90}, HOLD_ANGLE},
+       {{36, 12, 160}, FAST_MOVE_FWD}});
+
+  wait_drive();
+  */
+
   // ez::as::auton_selector.call_selected_auton();
+  /*
   smooth_pure_pursuit(
       {{{0, 24, 0}, LOOK_AT_TARGET_FWD},
        {{24, 24, 0}, LOOK_AT_TARGET_FWD},
        {{24, 48, 0}, FAST_MOVE_FWD}});
+       */
+
+  /*
+    smooth_pure_pursuit(
+      {{{24, 40, 0}, LOOK_AT_TARGET_FWD},
+       {{24, 48, 0}, FAST_MOVE_FWD}});
+       */
 
   /*
   smooth_pure_pursuit(

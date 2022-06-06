@@ -6,21 +6,20 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "main.h"
 
-bool indexer_on = false;
 int amount_of_fires = 0;
 
 void set_indexer_piston(bool input) { indexerPiston.set_value(input); }
 
 void fire_indexer(int fire_amount) {
-  if (!indexer_on) {
+  if (!indexer_on && getRPM() >= 2000) {
     indexer_on = true;
     amount_of_fires = fire_amount;
   }
 }
 
 void indexer_control() {
-  const int active_time = 500;  // keep in multiples of 10 ms
-  const int deactive_time = 250;
+  const int active_time = 300;  // keep in multiples of 10 ms
+  const int deactive_time = 500;
   int timer = 0;
   while (true) {
     // When the timer has reached, disable piston and don't let the piston reengage for another 250ms

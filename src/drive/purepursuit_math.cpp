@@ -73,7 +73,11 @@ std::vector<odom> inject_points(std::vector<odom> imovements) {
     int num_of_points_that_fit = (distance_to_point(input[i + 1].target, input[i].target)) / SPACING;
 
     // Add parent point
-    output.push_back({input[i].target});
+    // Make sure the robot is looking at next point
+    output.push_back({input[i].target,
+                      input[i + 1].turn_type,
+                      input[i].max_xy_speed,
+                      input[i].max_turn_speed});
     output_index++;
     injected_pp_index.push_back(output_index);
 

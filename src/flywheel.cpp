@@ -10,10 +10,10 @@ void set_flywheel(int input) { flywheel = input; }
 double getRPM() { return flywheel.get_actual_velocity() * 5; }
 
 void flywheel_control() {
-  const double kP = 3.0;
+  const double kP = 3.5;
   const double maxVoltage = 12000;
-  const double maxRPM = 3200;                    // Geared for 3000RPM (600 5:1), but this is the measured max RPM
-  const double kv = 0.98 * maxVoltage / maxRPM;  // Multiplied by a scalar to adjust for the real world
+  const double maxRPM = 3150;                    // Geared for 3000RPM (600 5:1), but this is the measured max RPM
+  const double kv = 0.99 * maxVoltage / maxRPM;  // Multiplied by a scalar to adjust for the real world
   double deadband = 100;                         // "Acceptable" velocity range to switch to hold power + p control
 
   while (true) {
@@ -38,6 +38,7 @@ void flywheel_control() {
       output = holdPower + kP * rpmError;
 
     flywheel.move_voltage(output);
+    //flywheel.move_voltage(holdPower);
 
     pros::delay(DELAY_TIME);
   }
@@ -46,7 +47,7 @@ pros::Task flywheelControl(flywheel_control);
 
 void flywheel_opcontrol() {
   if (master.get_digital_new_press(B_FLYWHEEL_MAX))
-    targetRPM = targetRPM != 0 ? 0 : 3230;
-  else if (master.get_digital_new_press(B_FLYWHEEL_SLOW))
     targetRPM = targetRPM != 0 ? 0 : 3000;
+  else if (master.get_digital_new_press(B_FLYWHEEL_SLOW))
+    targetRPM = targetRPM != 0 ? 0 : 2800;
 }
