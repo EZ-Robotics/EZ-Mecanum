@@ -10,7 +10,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 double get_center() { return center_tracker.get_value() / (TICK_PER_REV / (WHEEL_DIA * M_PI)); }
 double get_left() { return left_tracker.get_value() / (TICK_PER_REV / (WHEEL_DIA * 3.1415)); }
 double get_right() { return right_tracker.get_value() / (TICK_PER_REV / (WHEEL_DIA * 3.1415)); }
-double get_angle() { return current.theta; }
+// double get_angle() { return current.theta; }
+double get_angle() { return imu.get_rotation(); }
 
 void reset_trackers() {
   center_tracker.reset();

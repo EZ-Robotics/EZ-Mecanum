@@ -14,9 +14,9 @@ void set_pid_defaults() {
   xPID.set_exit_condition(300, 1, 625, 3, 750, 750);
   yPID.set_exit_condition(300, 1, 625, 3, 750, 750);
   aPID.set_exit_condition(100, 3, 500, 7, 500, 500);
-  xPID.set_constants(22.5, 0, 250, 0);
+  xPID.set_constants(35, 0, 250, 0);
   yPID.set_constants(22.5, 0, 250, 0);
-  aPID.set_constants(5, 0, 35, 0);
+  aPID.set_constants(5, 0, 25, 0);
 
   // These are for ez-template style drive pid and can be ignored for odom
   auto consts = xPID.get_constants();

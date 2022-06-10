@@ -12,8 +12,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 /**
  * Auton Tuned Default Speeds
  */
-#define MAX_XY 115
-#define MAX_A 80
+#define MAX_XY 90
+#define MAX_A 75
 #define TURN_SPEED 90
 #define VECTOR_SCALING 1.64893  // max y velocity / max x velocity, this gets multipled to the raw x power bceause thats the slower side
 
@@ -68,7 +68,7 @@ inline const int TICK_PER_REV = 8096;
 inline const double WHEEL_DIA = 2.0;
 
 // Tracking wheel offsets
-inline const double WIDTH = 6.88;  // biger means angle will grow
+inline const double WIDTH = 7.02;  // biger means angle will grow // 6.88
 inline const double CENTER_OFFSET = -2.0;
 
 // ignore these unless the left/right tracker aren't mounted symetrically

@@ -38,12 +38,15 @@ void drive_pid_task() {
   // Compute PID
   leftPID.compute(get_left());
   rightPID.compute(get_right());
-  headingPID.compute(imu.get_rotation());
+  //headingPID.compute(imu.get_rotation());
+  headingPID.compute(get_angle());
 
   // Clip output power
   int l_drive_out = clip_num(leftPID.output, max_xy, -max_xy);
   int r_drive_out = clip_num(rightPID.output, max_xy, -max_xy);
   int h_out = clip_num(headingPID.output, 127, -127);
+
+  printf("angle: %f   l: %f  r: %f  \n", get_angle(), get_left(), get_right());
 
   // Set motors
   set_left(l_drive_out + h_out);
@@ -53,7 +56,7 @@ void drive_pid_task() {
 void turn_pid_task() {
   // Comute turn PID and find shortest path to angle
   //aPID.compute(imu.get_rotation());
-  aPID.compute(imu.get_rotation());
+  aPID.compute(get_angle());
 
   // Clip outpout power
   int turn_out = clip_num(aPID.output, max_a, -max_a);

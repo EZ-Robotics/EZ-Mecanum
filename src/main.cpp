@@ -19,6 +19,7 @@ void initialize() {
 
   trackingTask.suspend();
 
+  imu.set_data_rate(5);
   imu.reset();
   pros::delay(2000);
   master.rumble(".");
@@ -39,7 +40,7 @@ void initialize() {
       Auton("Smooth Pp Square\n\nPure Pursuit through a square, \nbut smooth.", smooth_pp_example),
       Auton("Smooth Pp Square Wait Until\n\nPure Pursuit through a square,\nbut smooth,\nbut run the intake.", wait_until_pp),
   });
-
+  /*
   std::vector<odom> path =
       smooth_path(inject_points(
                       {{{15, 9, 45}, HOLD_ANGLE},
@@ -49,6 +50,7 @@ void initialize() {
                        {{36, 12, 157}, HOLD_ANGLE}}),
                   0.3, 0.005, 0.0001);
   print_path_for_python(path);
+  */
 
   ez::as::initialize();
 }
@@ -65,8 +67,50 @@ void autonomous() {
   reset_odom();
   reset_pid_targets();
   drive_brake(MOTOR_BRAKE_HOLD);
+  set_angle(0);
   trackingTask.resume();
 
+  printf("(%f, %f, %f)\n", current.x, current.y, current.theta);
+
+  // pure_pursuit({{{0, 24, 0}, HOLD_ANGLE}, {{24, 24, 0}, HOLD_ANGLE}, {{24, 0, 0}, HOLD_ANGLE}, {{0, 0, 0}, HOLD_ANGLE}});
+  // imu_pid(360*10);
+
+  // double width = 3.75 * 12;
+  // double length = 5.5 * 12;
+  double width = 3 * 12;
+  double length = 4 * 12;
+  double h_length = length / 2.0;
+  int xy_speed = 60;
+  int a_speed = 80;
+  turn_types turn = HOLD_ANGLE;
+
+  std::vector<odom> path =
+      {{{width, 0, 0}, turn, xy_speed, a_speed},
+       {{width, h_length, 0}, turn, xy_speed, a_speed},
+       {{0, h_length, 0}, turn, xy_speed, a_speed},
+       {{0, length, 0}, turn, xy_speed, a_speed},
+       {{width, length, 0}, turn, xy_speed, a_speed},
+       {{width, h_length, 0}, turn, xy_speed, a_speed},
+       {{0, h_length, 0}, turn, xy_speed, a_speed},
+       {{0, 0, 0}, turn, xy_speed, a_speed}};
+
+  std::vector<odom> path2 =
+      {{{0, length, 0}, turn, xy_speed, a_speed},
+       {{width, length, 90}, turn, xy_speed, a_speed},
+       {{width, h_length, 180}, turn, xy_speed, a_speed},
+       {{0, h_length, -90}, turn, xy_speed, a_speed},
+       {{0, 0, 180}, turn, xy_speed, a_speed}};
+
+  std::vector<odom> path3 =
+      {{{0, length, 0}, HOLD_ANGLE, xy_speed, a_speed},
+       {{width, length, 0}, HOLD_ANGLE, xy_speed, a_speed},
+       {{width, h_length, 0}, HOLD_ANGLE, xy_speed, a_speed},
+       {{0, h_length, 0}, HOLD_ANGLE, xy_speed, a_speed},
+       {{0, 0, 0}, HOLD_ANGLE, xy_speed, a_speed}};
+   smooth_pure_pursuit(path3);
+  //move_to_point({{0, 36, 0}, turn});
+
+  /*
   targetRPM = 3000;
 
   smooth_pure_pursuit(
@@ -86,51 +130,6 @@ void autonomous() {
   fire_indexer();
   while (getRPM() <= targetRPM || indexer_on) pros::delay(10);
   fire_indexer();
-
-  /*
-  set_intake(-127);
-  wait_drive();
-  set_intake(127);
-  pros::delay(500);
-  */
-
-  /*
-  smooth_pure_pursuit(
-      {{{18, 12, 90}, HOLD_ANGLE},
-       {{36, 12, 90}, HOLD_ANGLE},
-       {{36, 12, 160}, FAST_MOVE_FWD}});
-
-  wait_drive();
-  */
-
-  // ez::as::auton_selector.call_selected_auton();
-  /*
-  smooth_pure_pursuit(
-      {{{0, 24, 0}, LOOK_AT_TARGET_FWD},
-       {{24, 24, 0}, LOOK_AT_TARGET_FWD},
-       {{24, 48, 0}, FAST_MOVE_FWD}});
-       */
-
-  /*
-    smooth_pure_pursuit(
-      {{{24, 40, 0}, LOOK_AT_TARGET_FWD},
-       {{24, 48, 0}, FAST_MOVE_FWD}});
-       */
-
-  /*
-  smooth_pure_pursuit(
-      {{{-6, 24, 50}, LOOK_AT_TARGET_FWD},
-       {{36, 36, 50}, HOLD_ANGLE},
-       {{36, 30, 50}, HOLD_ANGLE},
-       {{0, 0, 0}, FAST_MOVE_REV}},
-      KINDA_SMOOTH);
-
-  pp_wait_until(2);
-  set_intake(127);
-  pp_wait_until(3);
-  set_intake(0);
-
-  wait_drive();
   */
 }
 
