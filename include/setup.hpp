@@ -54,7 +54,8 @@ inline const std::vector<pros::Motor> all_motors = {l1_front, l2_front, r1_back,
 inline pros::Imu imu(7);
 //*/
 inline pros::Motor flywheel(4, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_DEGREES);  // this makes rpm in degrees
-inline pros::Motor intake(3);
+inline pros::Motor flywheel2(3, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_DEGREES);  // this makes rpm in degrees
+inline pros::Motor intake(10);
 inline pros::ADIDigitalOut indexerPiston('A');
 inline pros::ADIEncoder center_tracker('C', 'D', true);
 inline pros::ADIEncoder left_tracker('E', 'F');
@@ -65,11 +66,13 @@ inline pros::ADIEncoder right_tracker('G', 'H');
  */
 // Wheel size and encoder
 inline const int TICK_PER_REV = 8096;
-inline const double WHEEL_DIA = 2.0;
+inline const double WHEEL_DIA = 1.95;
+
+inline const double TICK_PER_INCH = (TICK_PER_REV / (WHEEL_DIA * M_PI));
 
 // Tracking wheel offsets
-inline const double WIDTH = 7.02;  // biger means angle will grow // 6.88
-inline const double CENTER_OFFSET = -2.0;
+inline const double WIDTH = 6.8275 * TICK_PER_INCH;  // biger means angle will grow // 6.88 // 7.02
+inline const double CENTER_OFFSET = -2.0 * TICK_PER_INCH;
 
 // ignore these unless the left/right tracker aren't mounted symetrically
 inline const double RIGHT_OFFSET = WIDTH / 2.0;

@@ -6,6 +6,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "main.h"
 
+#include "auton_selector/sdcard.hpp"
 #include "autons.hpp"
 #include "drive/exit_conditions.hpp"
 #include "drive/purepursuit_math.hpp"
@@ -63,14 +64,14 @@ void competition_initialize() { trackingTask.suspend(); }
 
 // Runs the user autonomous code.
 void autonomous() {
-  reset_trackers();
   reset_odom();
   reset_pid_targets();
   drive_brake(MOTOR_BRAKE_HOLD);
   set_angle(0);
-  trackingTask.resume();
 
   printf("(%f, %f, %f)\n", current.x, current.y, current.theta);
+
+  // ez::as::auton_selector.call_selected_auton();
 
   // pure_pursuit({{{0, 24, 0}, HOLD_ANGLE}, {{24, 24, 0}, HOLD_ANGLE}, {{24, 0, 0}, HOLD_ANGLE}, {{0, 0, 0}, HOLD_ANGLE}});
   // imu_pid(360*10);
@@ -80,8 +81,8 @@ void autonomous() {
   double width = 3 * 12;
   double length = 4 * 12;
   double h_length = length / 2.0;
-  int xy_speed = 60;
-  int a_speed = 80;
+  int xy_speed = MAX_XY;
+  int a_speed = MAX_A;
   turn_types turn = HOLD_ANGLE;
 
   std::vector<odom> path =
@@ -95,11 +96,11 @@ void autonomous() {
        {{0, 0, 0}, turn, xy_speed, a_speed}};
 
   std::vector<odom> path2 =
-      {{{0, length, 0}, turn, xy_speed, a_speed},
-       {{width, length, 90}, turn, xy_speed, a_speed},
-       {{width, h_length, 180}, turn, xy_speed, a_speed},
-       {{0, h_length, -90}, turn, xy_speed, a_speed},
-       {{0, 0, 180}, turn, xy_speed, a_speed}};
+      {{{0, length, 0}, LOOK_AT_TARGET_FWD, xy_speed, a_speed},
+       {{width, length, 90}, LOOK_AT_TARGET_FWD, xy_speed, a_speed},
+       {{width, h_length, 180}, LOOK_AT_TARGET_FWD, xy_speed, a_speed},
+       {{0, h_length, -90}, LOOK_AT_TARGET_FWD, xy_speed, a_speed},
+       {{0, 0, 0}, HOLD_ANGLE, xy_speed, a_speed}};
 
   std::vector<odom> path3 =
       {{{0, length, 0}, HOLD_ANGLE, xy_speed, a_speed},
@@ -107,8 +108,10 @@ void autonomous() {
        {{width, h_length, 0}, HOLD_ANGLE, xy_speed, a_speed},
        {{0, h_length, 0}, HOLD_ANGLE, xy_speed, a_speed},
        {{0, 0, 0}, HOLD_ANGLE, xy_speed, a_speed}};
-   smooth_pure_pursuit(path3);
-  //move_to_point({{0, 36, 0}, turn});
+  smooth_pure_pursuit(path3);
+  // imu_pid(360*10);
+  // move_to_point({{0, 24, 0}});
+  // wait_drive();
 
   /*
   targetRPM = 3000;
@@ -138,14 +141,23 @@ void opcontrol() {
   // Drive brake, this is preference
   drive_brake(MOTOR_BRAKE_HOLD);
 
-  trackingTask.resume();
+  bool drive_type = false;
 
   while (true) {
     flywheel_opcontrol();
-    joystick_control();
+    // joystick_control();
     // lucas_joystick_control();
+    // tank_control();
     indexer_opcontrol();
     intake_opcontrol();
+
+    if (master.get_digital_new_press(DIGITAL_X)) {
+      drive_type = !drive_type;
+    }
+    if (drive_type)
+      tank_control();
+    else
+      joystick_control();
 
     pros::delay(DELAY_TIME);
   }

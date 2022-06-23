@@ -6,7 +6,10 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "main.h"
 
-void set_flywheel(int input) { flywheel = input; }
+void set_flywheel(int input) {
+  flywheel.move_voltage(input);
+  flywheel2.move_voltage(input);
+}
 double getRPM() { return flywheel.get_actual_velocity() * 5; }
 
 void flywheel_control() {
@@ -37,8 +40,8 @@ void flywheel_control() {
     else
       output = holdPower + kP * rpmError;
 
-    flywheel.move_voltage(output);
-    //flywheel.move_voltage(holdPower);
+    set_flywheel(output);
+    // flywheel.move_voltage(holdPower);
 
     pros::delay(DELAY_TIME);
   }

@@ -8,9 +8,14 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "api.h"
 
+long get_raw_center();
+long get_raw_left();
+long get_raw_right();
+
 double get_center();
 double get_left();
 double get_right();
+
 double get_angle();
 void reset_trackers();
 void set_angle(double input);
@@ -25,3 +30,4 @@ void lucas_joystick_control();
 
 void set_left(int input);
 void set_right(int input);
+void tank_control();

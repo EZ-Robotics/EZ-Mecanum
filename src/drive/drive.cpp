@@ -6,12 +6,16 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "main.h"
 
+long get_raw_center() { return center_tracker.get_value(); }
+long get_raw_left() { return left_tracker.get_value(); }
+long get_raw_right() { return right_tracker.get_value(); }
+
 // Returns inches
-double get_center() { return center_tracker.get_value() / (TICK_PER_REV / (WHEEL_DIA * M_PI)); }
-double get_left() { return left_tracker.get_value() / (TICK_PER_REV / (WHEEL_DIA * 3.1415)); }
-double get_right() { return right_tracker.get_value() / (TICK_PER_REV / (WHEEL_DIA * 3.1415)); }
-// double get_angle() { return current.theta; }
-double get_angle() { return imu.get_rotation(); }
+double get_center() { return get_raw_center() / TICK_PER_INCH; }
+double get_left() { return get_raw_left() / TICK_PER_INCH; }
+double get_right() { return get_raw_right() / TICK_PER_INCH; }
+double get_angle() { return current.theta; }
+// double get_angle() { return imu.get_rotation(); }
 
 void reset_trackers() {
   center_tracker.reset();
@@ -125,4 +129,11 @@ void lucas_joystick_control() {
   int a = inputcurve(deadzone(master.get_analog(ANALOG_RIGHT_X)));
 
   lucas_set_drive(-x, -y, -a);
+}
+
+void tank_control() {
+  set_left(deadzone(master.get_analog(ANALOG_LEFT_Y)));
+  set_right(deadzone(master.get_analog(ANALOG_RIGHT_Y)));
+  mode = DISABLED;
+
 }

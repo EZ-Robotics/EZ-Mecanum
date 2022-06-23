@@ -32,9 +32,9 @@ void tracking_task() {
   double beta = 0, alpha = 0, theta = 0;
   double Xx = 0, Yy = 0, Xy = 0, Yx = 0;
   while (true) {
-    l_current = get_left();
-    r_current = get_right();
-    c_current = get_center();
+    l_current = get_raw_left();
+    r_current = get_raw_right();
+    c_current = get_raw_center();
 
     l = l_current - l_last;
     r = r_current - r_last;
@@ -68,8 +68,8 @@ void tracking_task() {
     Yx = h * sin(alpha);
     Yy = h * cos(alpha);
 
-    current.x += Xx + Yx;
-    current.y += Xy + Yy;
+    current.x += (Xx + Yx) / TICK_PER_INCH;
+    current.y += (Xy + Yy) / TICK_PER_INCH;
     angle_rad += theta;
     current.theta = to_deg(angle_rad);
 
