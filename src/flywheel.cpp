@@ -7,41 +7,55 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #include "main.h"
 
 void set_flywheel(int input) {
-  flywheel.move_voltage(input);
-  flywheel2.move_voltage(input);
+  flywheel = input;
+  flywheel2 = input;
 }
 double getRPM() { return flywheel.get_actual_velocity() * 5; }
 
 void flywheel_control() {
-  const double kP = 3.5;
-  const double maxVoltage = 12000;
-  const double maxRPM = 3150;                    // Geared for 3000RPM (600 5:1), but this is the measured max RPM
-  const double kv = 0.99 * maxVoltage / maxRPM;  // Multiplied by a scalar to adjust for the real world
-  double deadband = 100;                         // "Acceptable" velocity range to switch to hold power + p control
+  // const double max[2] = {3300, 127};
+  // const double min[2] = {2850, 110};
+  const double max[2] = {3153, 127};
+  const double min[2] = {1558, 63};
+  const double slope = (max[1] - min[1]) / (max[0] - min[0]);
+
+  const double thresh = 100;
+  double output = 0;
+
+  PID flywheelPID(0, 0.005, 0, thresh);
+  flywheelPID.reset_i_sgn = false;
 
   while (true) {
-    double rpmError = targetRPM - getRPM();
-    double holdPower = targetRPM * kv;
-    double output = 0;
+    // Calculate theoretical power to hold rpm
+    double hold_power = targetRPM * slope;
 
-    // Coast down
-    if (targetRPM == 0)
+    // If the target is 0 do nothing
+    if (targetRPM == 0) {
       output = 0;
+    }
 
-    // Running too slow (< target - deadband), apply full power
-    else if (rpmError > deadband)
-      output = maxVoltage;
+    // If flywheel is slower then target rpm, go max speed
+    else if (getRPM() <= targetRPM - thresh) {
+      output = 127;
+    }
 
-    // Running too fast (> target + deadband), apply half of hold power
-    else if (rpmError < -deadband)
-      output = holdPower * 0.5;
+    // When flywheel is faster then target rpm, go 0
+    else if (getRPM() >= targetRPM + thresh) {
+      output = hold_power;
+    }
 
-    // Running within deadband, switch to hold power + p contorl
-    else
-      output = holdPower + kP * rpmError;
+    // When flywheel is within deadband, run I controller
+    else {
+      flywheelPID.set_target(targetRPM);
+      flywheelPID.compute(getRPM());
+      output = hold_power + flywheelPID.output;
+    }
 
+    output = clip_num(output, 127, 0);
     set_flywheel(output);
-    // flywheel.move_voltage(holdPower);
+
+    printf("%f + %f     rpM: %f, speed: %i\n", flywheelPID.output, hold_power, getRPM(), (int)output);
+    // printf("%f\n", getRPM());
 
     pros::delay(DELAY_TIME);
   }

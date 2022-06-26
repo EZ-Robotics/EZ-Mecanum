@@ -163,15 +163,16 @@ class PID {
   /**
    * PID variables.
    */
-  double output;
-  double cur;
-  double error;
-  double target;
-  double prev_error;
-  double integral;
-  double derivative;
-  long time;
-  long prev_time;
+  double output = 0.0;
+  double cur = 0.0;
+  double error = 0.0;
+  double target = 0.0;
+  double prev_error = 0.0;
+  double integral = 0.0;
+  double derivative = 0.0;
+  long time = 0.0;
+  long prev_time = 0.0;
+  bool reset_i_sgn = true;
 
  private:
   int i = 0, j = 0, k = 0, l = 0;

@@ -59,7 +59,7 @@ double PID::compute(double current) {
     if (fabs(error) < constants.start_i)
       integral += error;
 
-    if (sgn(error) != sgn(prev_error))
+    if (sgn(error) != sgn(prev_error) && reset_i_sgn)
       integral = 0;
   }
 
