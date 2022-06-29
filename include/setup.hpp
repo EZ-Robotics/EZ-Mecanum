@@ -38,14 +38,24 @@ inline pros::Motor r2_back(16);
 */
 // Intake Front
 ///*
+/*
 inline pros::Motor l1_front(15);
 inline pros::Motor l2_front(9, true);
 inline pros::Motor r1_back(18, true);
 inline pros::Motor r2_back(14);
-inline pros::Motor r1_front(10,true);
+inline pros::Motor r1_front(10, true);
 inline pros::Motor r2_front(20);
 inline pros::Motor l1_back(16);
 inline pros::Motor l2_back(17, true);
+*/
+inline pros::Motor l1_front(18);
+inline pros::Motor l2_front(14, true);
+inline pros::Motor r1_back(15, true);
+inline pros::Motor r2_back(9);
+inline pros::Motor r1_front(16, true);
+inline pros::Motor r2_front(17);
+inline pros::Motor l1_back(10);
+inline pros::Motor l2_back(20, true);
 
 inline const std::vector<pros::Motor> left_motors = {l1_front, l2_front, l1_back, l2_back};
 inline const std::vector<pros::Motor> right_motors = {r1_front, r2_front, r1_back, r2_back};
@@ -55,7 +65,7 @@ inline pros::Imu imu(7);
 //*/
 inline pros::Motor flywheel(4, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_DEGREES);  // this makes rpm in degrees
 inline pros::Motor flywheel2(3, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_DEGREES);  // this makes rpm in degrees
-inline pros::Motor intake(6);
+inline pros::Motor intake(6, true);
 inline pros::ADIDigitalOut indexerPiston('A');
 inline pros::ADIEncoder center_tracker('C', 'D', true);
 inline pros::ADIEncoder left_tracker('E', 'F');
@@ -81,7 +91,8 @@ inline const double LEFT_OFFSET = WIDTH / 2.0;
 /**
  * Controls
  */
-#define B_INDEXER pros::E_CONTROLLER_DIGITAL_R1
+#define B_INDEXER_TRIPPLE pros::E_CONTROLLER_DIGITAL_R2
+#define B_INDEXER_SPAM pros::E_CONTROLLER_DIGITAL_R1
 #define B_INTAKE_IN pros::E_CONTROLLER_DIGITAL_L1
 #define B_INTAKE_OUT pros::E_CONTROLLER_DIGITAL_L2
 #define B_FLYWHEEL_MAX pros::E_CONTROLLER_DIGITAL_DOWN

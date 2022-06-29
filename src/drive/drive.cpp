@@ -101,7 +101,7 @@ void drive_brake(pros::motor_brake_mode_e_t input) {
 
 // Joystick deadzone
 int deadzone(int input) {
-  if (abs(input) > 5)
+  if (abs(input) > 8)
     return input;
   return 0;
 }
@@ -135,5 +135,4 @@ void tank_control() {
   set_left(deadzone(master.get_analog(ANALOG_LEFT_Y)));
   set_right(deadzone(master.get_analog(ANALOG_RIGHT_Y)));
   mode = DISABLED;
-
 }

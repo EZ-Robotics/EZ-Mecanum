@@ -11,15 +11,15 @@ int amount_of_fires = 0;
 void set_indexer_piston(bool input) { indexerPiston.set_value(input); }
 
 void fire_indexer(int fire_amount) {
-  if (!indexer_on && getRPM() >= 1200) {
+  if (getRPM() >= 1000) {
     indexer_on = true;
-    amount_of_fires = fire_amount;
+    amount_of_fires += fire_amount;
   }
 }
 
 void indexer_control() {
-  const int active_time = 300;  // keep in multiples of 10 ms
-  const int deactive_time = 500;
+  const int active_time = 100;  // keep in multiples of 10 ms
+  const int deactive_time = 250;
   int timer = 0;
   while (true) {
     // When the timer has reached, disable piston and don't let the piston reengage for another 250ms
@@ -40,13 +40,22 @@ void indexer_control() {
       set_indexer_piston(true);
       timer += DELAY_TIME;
     }
+
+    printf("%i\n", amount_of_fires);
+
     pros::delay(DELAY_TIME);
   }
 }
 pros::Task indexerControl(indexer_control);
 
+bool last_indexer_press = false;
+bool current_press = false;
 void indexer_opcontrol() {
-  if (master.get_digital(B_INDEXER)) {
+  if (master.get_digital_new_press(B_INDEXER_SPAM) && amount_of_fires < 3) {
     fire_indexer();
+  }
+
+  if (master.get_digital_new_press(B_INDEXER_TRIPPLE) && !indexer_on) {
+    fire_indexer(3);
   }
 }
