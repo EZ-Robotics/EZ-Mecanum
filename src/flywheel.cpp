@@ -10,14 +10,15 @@ void set_flywheel(int input) {
   flywheel = input;
   flywheel2 = input;
 }
-double getRPM() { return flywheel.get_actual_velocity() * 5; }
+double getRPM() { return flywheel.get_actual_velocity() * 3; }
 
 void flywheel_control() {
   // const double max[2] = {3300, 127};
   // const double min[2] = {2850, 110};
-  const double max[2] = {3153, 127};
-  const double min[2] = {1558, 63};
+  const double max[2] = {1930, 127};
+  const double min[2] = {966, 63};
   const double slope = (max[1] - min[1]) / (max[0] - min[0]);
+  const double b = max[1] - (slope * max[0]);
 
   const double thresh = 100;
   double output = 0;
@@ -27,7 +28,7 @@ void flywheel_control() {
 
   while (true) {
     // Calculate theoretical power to hold rpm
-    double hold_power = targetRPM * slope;
+    double hold_power = (targetRPM * slope) + b;
 
     // If the target is 0 do nothing
     if (targetRPM == 0) {
@@ -54,8 +55,8 @@ void flywheel_control() {
     output = clip_num(output, 127, 0);
     set_flywheel(output);
 
-    printf("%f + %f     rpM: %f, speed: %i\n", flywheelPID.output, hold_power, getRPM(), (int)output);
-    // printf("%f\n", getRPM());
+    //printf("%f + %f     rpM: %f, speed: %i\n", flywheelPID.output, hold_power, getRPM(), (int)output);
+    printf("%f\n", getRPM());
 
     pros::delay(DELAY_TIME);
   }
@@ -64,7 +65,7 @@ pros::Task flywheelControl(flywheel_control);
 
 void flywheel_opcontrol() {
   if (master.get_digital_new_press(B_FLYWHEEL_MAX))
-    targetRPM = targetRPM != 0 ? 0 : 3000;
+    targetRPM = targetRPM != 0 ? 0 : 1800;
   else if (master.get_digital_new_press(B_FLYWHEEL_SLOW))
-    targetRPM = targetRPM != 0 ? 0 : 2800;
+    targetRPM = targetRPM != 0 ? 0 : 1500;
 }
