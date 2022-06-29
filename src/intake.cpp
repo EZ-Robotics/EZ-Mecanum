@@ -13,6 +13,7 @@ int target_speed = 0;  // Global target speed
 // For use in this file only
 void raw_set_intake(int input) {
   intake = input;
+  intake2 = input;
 }
 
 // This is used outside of this file

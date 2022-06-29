@@ -8,7 +8,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 void set_flywheel(int input) {
   flywheel = input;
-  flywheel2 = input;
 }
 double getRPM() { return flywheel.get_actual_velocity() * 3; }
 

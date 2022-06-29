@@ -64,8 +64,8 @@ inline const std::vector<pros::Motor> all_motors = {l1_front, l2_front, r1_back,
 inline pros::Imu imu(7);
 //*/
 inline pros::Motor flywheel(4, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_DEGREES);  // this makes rpm in degrees
-inline pros::Motor flywheel2(3, pros::E_MOTOR_GEARSET_06, true, pros::E_MOTOR_ENCODER_DEGREES);  // this makes rpm in degrees
 inline pros::Motor intake(6, true);
+inline pros::Motor intake2(3);
 inline pros::ADIDigitalOut indexerPiston('A');
 inline pros::ADIEncoder center_tracker('C', 'D', true);
 inline pros::ADIEncoder left_tracker('E', 'F');
