@@ -6,16 +6,40 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "main.h"
 
+// Set flywheel to voltage
 void set_flywheel(int input) {
-  flywheel = input;
+  for (auto i : flywheel_motors) {
+    i.move_voltage(input * (12000.0 / 127.0));
+  }
 }
-double getRPM() { return flywheel.get_actual_velocity() * 3; }
 
+// Raw RPM (rpm * external ratio)
+double raw_getRPM() { return flywheel_motors[0].get_actual_velocity() * 3; }
+
+// Moving average
+std::vector<double> velocities;
+double getRPM() {
+  velocities.push_back(raw_getRPM());
+
+  if (velocities.size() >= 10)
+    velocities.erase(velocities.begin());
+
+  return std::accumulate(velocities.begin(), velocities.end(), 0.0) / velocities.size();
+}
+
+// Check if the flywheel is at RPM
+bool is_flywheel_at_rpm() {
+  double error = targetRPM - getRPM();
+  return fabs(error) > 100 ? false : true;
+}
+
+// Control flywheels velocity
 void flywheel_control() {
-  // const double max[2] = {3300, 127};
-  // const double min[2] = {2850, 110};
+  // Tested data points
   const double max[2] = {1930, 127};
   const double min[2] = {966, 63};
+
+  // Calculating m and b
   const double m = (max[1] - min[1]) / (max[0] - min[0]);
   const double b = max[1] - (m * max[0]);
 
@@ -56,13 +80,14 @@ void flywheel_control() {
     set_flywheel(output);
 
     // printf("%f + %f     rpM: %f, speed: %i\n", flywheelPID.output, hold_power, getRPM(), (int)output);
-    // printf("%f\n", getRPM());
+    // printf("%f   %f\n", getRPM(), raw_getRPM());
 
     pros::delay(DELAY_TIME);
   }
 }
 pros::Task flywheelControl(flywheel_control);
 
+// Flywheel usercontrol
 void flywheel_opcontrol() {
   if (master.get_digital_new_press(B_FLYWHEEL_MAX))
     targetRPM = targetRPM != 0 ? 0 : 1800;

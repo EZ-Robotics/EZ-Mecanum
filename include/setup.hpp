@@ -25,29 +25,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 /**
  * Ports
  */
-/*
-// Flywheel Front
-inline pros::Motor l1_front(19, true);
-inline pros::Motor l2_front(20);
-inline pros::Motor r1_front(12, true);
-inline pros::Motor r2_front(14);
-inline pros::Motor l1_back(17, true);
-inline pros::Motor l2_back(18);
-inline pros::Motor r1_back(15, true);
-inline pros::Motor r2_back(16);
-*/
-// Intake Front
-///*
-/*
-inline pros::Motor l1_front(15);
-inline pros::Motor l2_front(9, true);
-inline pros::Motor r1_back(18, true);
-inline pros::Motor r2_back(14);
-inline pros::Motor r1_front(10, true);
-inline pros::Motor r2_front(20);
-inline pros::Motor l1_back(16);
-inline pros::Motor l2_back(17, true);
-*/
 inline pros::Motor l1_front(18);
 inline pros::Motor l2_front(14, true);
 inline pros::Motor r1_back(15, true);
@@ -62,10 +39,14 @@ inline const std::vector<pros::Motor> right_motors = {r1_front, r2_front, r1_bac
 inline const std::vector<pros::Motor> all_motors = {l1_front, l2_front, r1_back, r2_back, r1_front, r2_front, l1_back, l2_back};
 
 inline pros::Imu imu(7);
-//*/
+
 inline pros::Motor flywheel(4, pros::E_MOTOR_GEARSET_06, false, pros::E_MOTOR_ENCODER_DEGREES);  // this makes rpm in degrees
+inline const std::vector<pros::Motor> flywheel_motors = {flywheel};
+
 inline pros::Motor intake(6, true);
 inline pros::Motor intake2(3);
+inline const std::vector<pros::Motor> intake_motors = {intake, intake2};
+
 inline pros::ADIDigitalOut indexerPiston('A');
 inline pros::ADIEncoder center_tracker('C', 'D', true);
 inline pros::ADIEncoder left_tracker('E', 'F');

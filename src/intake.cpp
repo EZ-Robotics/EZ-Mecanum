@@ -12,8 +12,9 @@ int target_speed = 0;  // Global target speed
 
 // For use in this file only
 void raw_set_intake(int input) {
-  intake = input;
-  intake2 = input;
+  for (auto i : intake_motors) {
+    i.move_voltage(input * (12000.0 / 127.0));
+  }
 }
 
 // This is used outside of this file
@@ -42,7 +43,7 @@ void intake_task() {
     }
 
     // Detect a jam if velocity is 0 for 250ms
-    else if (target_speed != 0 && intake.get_actual_velocity() == 0) {
+    else if (target_speed != 0 && intake_motors[0].get_actual_velocity() == 0) {
       jam_counter += DELAY_TIME;
       if (jam_counter > wait_time) {
         jam_counter = 0;

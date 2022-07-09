@@ -10,5 +10,6 @@ inline double targetRPM = 0;
 
 void set_flywheel(int input);
 double getRPM();
+bool is_flywheel_at_rpm();
 
 void flywheel_opcontrol();
