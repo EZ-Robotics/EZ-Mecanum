@@ -46,7 +46,6 @@ void flywheel_control() {
   const double thresh = 100;
   double output = 0;
 
-  // PID flywheelPID(0, 0.005, 0, thresh);
   PID flywheelPID(0, 0.0008, 0, thresh);
   flywheelPID.reset_i_sgn = false;
 

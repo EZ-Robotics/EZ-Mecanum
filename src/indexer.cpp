@@ -30,6 +30,7 @@ void indexer_control() {
       set_indexer_piston(false);
       if (timer >= active_time + deactive_time) {
         indexer_queue--;
+        // while (!is_flywheel_at_rpm()) pros::delay(1);
         if (indexer_queue == 0) {
           indexer_on = false;
           indexer_queue = 0;
@@ -39,7 +40,7 @@ void indexer_control() {
       timer += DELAY_TIME;
     }
     // When initially turns on, trigger piston when flywheel is at rpm
-    else if (indexer_on && is_flywheel_at_rpm()) {
+    else if (indexer_on) {
       set_indexer_piston(true);
       timer += DELAY_TIME;
     }
